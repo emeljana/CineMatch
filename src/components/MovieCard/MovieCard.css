@@ -1,0 +1,48 @@
+.movie-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.movie-card-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-card-poster-placeholder {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  background: var(--color-surface-2);
+}
+
+.movie-card-info {
+  padding: 20px;
+}
+
+.movie-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.movie-card-year {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.movie-card-overview {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
