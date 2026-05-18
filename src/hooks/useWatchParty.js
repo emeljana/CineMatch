@@ -53,7 +53,7 @@ export function useWatchParty() {
     try {
       await leaveWatchParty(id);
       setWatchParty(null);
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError(parseError(err));
     } finally {
