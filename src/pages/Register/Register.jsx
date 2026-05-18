@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
 import './Register.css';
 
 function Register() {
@@ -22,48 +23,42 @@ function Register() {
         <h2 className="register-title">Create account</h2>
 
         <form onSubmit={handleSubmit} className="register-form">
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              minLength={3}
-              maxLength={20}
-              disabled={loading}
-              autoComplete="username"
-            />
-          </div>
+          <Input
+            id="username"
+            type="text"
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            minLength={3}
+            maxLength={20}
+            disabled={loading}
+            autoComplete="username"
+          />
 
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={loading}
-              autoComplete="email"
-            />
-          </div>
+          <Input
+            id="email"
+            type="email"
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
+            autoComplete="email"
+          />
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              maxLength={100}
-              disabled={loading}
-              autoComplete="new-password"
-            />
-          </div>
+          <Input
+            id="password"
+            type="password"
+            label="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={6}
+            maxLength={100}
+            disabled={loading}
+            autoComplete="new-password"
+          />
 
           {error && <p className="form-error">{error}</p>}
 
