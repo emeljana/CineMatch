@@ -22,7 +22,7 @@ export function useAuth() {
       const { data } = await login(email, password);
       localStorage.setItem('token', data.token);
       setUser(data.user);
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError(parseError(err));
     } finally {
