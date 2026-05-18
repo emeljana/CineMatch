@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\\\\src\" -Recurse -Force | Sort-Object FullName | ForEach-Object { if \\($_.PSIsContainer\\) { Write-Output \"DIR:  $\\($_.FullName\\)\" } else { Write-Output \"FILE: $\\($_.FullName\\)\" } })",
+      "Bash(git checkout *)",
+      "Bash(Remove-Item *)",
+      "Bash(gh pr create --title 'Lägg till grundstruktur för services, context, hooks och sidor' --body ' *)",
+      "Bash(gh pr *)",
+      "Bash(git pull *)",
+      "Bash(gh project *)",
+      "Bash(gh repo *)",
+      "Bash(gh label *)",
+      "Bash(gh issue create --title 'Skapa landningssida med navigation till Login och Register' --label enhancement,ux --body ' *)",
+      "Bash(gh issue create --title 'Skapa sida för glömt lösenord' --label enhancement,auth --body ' *)",
+      "Bash(gh issue create --title 'Skapa sida för återställning av lösenord' --label enhancement,auth --body ' *)",
+      "Bash(gh issue create --title 'Redirecta inloggade användare bort från /login och /register' --label enhancement,auth --body ' *)",
+      "Bash(gh issue create --title 'Hantera utgångna tokens globalt med Axios-interceptor' --label enhancement,tekniskt,auth --body ' *)",
+      "Bash(gh issue create --title 'Lägg till genreväljare vid skapande av WatchParty' --label enhancement,watchparty --body ' *)",
+      "Bash(gh issue create --title 'Skapa lobbyvy – väntrum innan swipe-sessionen startar' --label enhancement,watchparty --body ' *)",
+      "Bash(gh issue create --title 'Visa join-kod med kopiera-till-urklipp-knapp' --label enhancement,watchparty,ux --body ' *)",
+      "Bash(gh issue create --title 'Lägg till swipe-animationer på MovieCard' --label enhancement,swipe,ux --body ' *)",
+      "Bash(gh issue create --title 'Hämta fler filmer när kön håller på att ta slut' --label enhancement,swipe,tekniskt --body ' *)",
+      "Bash(gh issue create --title 'Visa framstegsindikator i swipe-kön' --label enhancement,swipe,ux --body ' *)",
+      "Bash(gh issue create --title 'Visa aktiva deltagare i WatchParty-headern' --label enhancement,watchparty,ux --body ' *)",
+      "Bash(gh issue *)",
+      "Bash(gh api *)",
+      "Bash(dir /s /b \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\\\\.claude\")",
+      "PowerShell(Test-Path \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\\\\CLAUDE.md\"; Get-ChildItem \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\" -Force | Where-Object { -not $_.PSIsContainer } | Select-Object Name)",
+      "Bash(git reset *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
