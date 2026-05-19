@@ -47,9 +47,25 @@
   color: var(--color-accent);
 }
 
-.watchparty-members {
-  font-size: 13px;
-  color: var(--color-text-muted);
+.member-avatars {
+  display: flex;
+  gap: 6px;
+}
+
+.member-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: default;
+  user-select: none;
 }
 
 .watchparty-main {

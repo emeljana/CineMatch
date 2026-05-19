@@ -78,9 +78,13 @@ function WatchParty() {
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>
           <span className="watchparty-code">{party?.joinCode}</span>
-          <span className="watchparty-members">
-            {activeMembers.length} member{activeMembers.length !== 1 ? 's' : ''}
-          </span>
+          <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
+            {activeMembers.map((m) => (
+              <span key={m.userId} className="member-avatar" title={m.username}>
+                {m.username.slice(0, 2).toUpperCase()}
+              </span>
+            ))}
+          </div>
         </div>
         <Button
           variant="secondary"
