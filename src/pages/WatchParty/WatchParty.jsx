@@ -105,6 +105,9 @@ function WatchParty() {
           </div>
         ) : (
           <>
+            <p className="swipe-progress" aria-live="polite">
+              Movie {currentIndex + 1} of {queue.length}
+            </p>
             <MovieCard movie={currentMovie} />
             <div className="watchparty-actions">
               <Button
