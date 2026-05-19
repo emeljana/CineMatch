@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
 import { useWatchParty } from '../../hooks/useWatchParty';
+import { useToast } from '../../context/toastContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import './WatchParty.css';
@@ -10,13 +11,14 @@ import './WatchParty.css';
 function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
+  const toast = useToast();
 
   const [party, setParty] = useState(null);
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [swiping, setSwiping] = useState(false);
 
   useEffect(() => {
@@ -29,13 +31,14 @@ function WatchParty() {
         setParty(partyRes.data);
         setQueue(queueRes.data);
       } catch {
-        setError('Could not load the party. It may no longer exist.');
+        setLoadFailed(true);
+        toast.error('Could not load the party. It may no longer exist.');
       } finally {
         setLoading(false);
       }
     }
     init();
-  }, [id]);
+  }, [id, toast]);
 
   async function handleSwipe(isLiked) {
     const currentMovie = queue[currentIndex];
@@ -49,7 +52,7 @@ function WatchParty() {
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
-      // skip and move on — the queue may have diverged
+      toast.error('Could not save your swipe.');
       setCurrentIndex((prev) => prev + 1);
     } finally {
       setSwiping(false);
@@ -61,7 +64,9 @@ function WatchParty() {
   }
 
   if (loading) return <div className="watchparty-status">Loading...</div>;
-  if (error) return <div className="watchparty-status watchparty-status--error">{error}</div>;
+  if (loadFailed) {
+    return <div className="watchparty-status watchparty-status--error">WatchParty unavailable.</div>;
+  }
 
   const currentMovie = queue[currentIndex];
   const queueExhausted = currentIndex >= queue.length;

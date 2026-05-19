@@ -10,11 +10,17 @@ const JOIN_CODE_LENGTH = 6;
 function Home() {
   const { user } = useUser();
   const { handleLogout } = useAuth();
-  const { handleCreate, handleJoin, loading, error, setError } = useWatchParty();
+  const { handleCreate, handleJoin, loading } = useWatchParty();
   const [joinCode, setJoinCode] = useState('');
+  const [joinCodeError, setJoinCodeError] = useState(null);
 
   async function handleJoinSubmit(e) {
     e.preventDefault();
+    if (joinCode.length !== JOIN_CODE_LENGTH) {
+      setJoinCodeError('Enter a 6-character join code.');
+      return;
+    }
+
     await handleJoin(joinCode.toUpperCase());
   }
 
@@ -22,7 +28,7 @@ function Home() {
     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
     if (value.length <= JOIN_CODE_LENGTH) {
       setJoinCode(value);
-      setError(null);
+      setJoinCodeError(null);
     }
   }
 
@@ -41,8 +47,6 @@ function Home() {
       <main className="home-main">
         <h1 className="home-heading">Movie night starts here</h1>
         <p className="home-subheading">Create a party or join one with a code.</p>
-
-        {error && <p className="home-error">{error}</p>}
 
         <div className="home-cards">
           <div className="home-card">
@@ -68,10 +72,17 @@ function Home() {
                 disabled={loading}
                 className="home-join-input"
                 aria-label="Join code"
+                aria-invalid={Boolean(joinCodeError)}
+                aria-describedby={joinCodeError ? 'join-code-error' : undefined}
               />
+              {joinCodeError && (
+                <p id="join-code-error" className="home-error">
+                  {joinCodeError}
+                </p>
+              )}
               <Button
                 type="submit"
-                disabled={loading || joinCode.length !== JOIN_CODE_LENGTH}
+                disabled={loading}
                 fullWidth
               >
                 {loading ? 'Joining...' : 'Join WatchParty'}
