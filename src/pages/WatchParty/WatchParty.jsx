@@ -63,13 +63,12 @@ function WatchParty() {
     setMatch(null);
   }
 
-  if (loading) return <div className="watchparty-status">Loading...</div>;
   if (loadFailed) {
     return <div className="watchparty-status watchparty-status--error">WatchParty unavailable.</div>;
   }
 
   const currentMovie = queue[currentIndex];
-  const queueExhausted = currentIndex >= queue.length;
+  const queueExhausted = !loading && currentIndex >= queue.length;
   const activeMembers = party?.members?.filter((m) => m.isActive) ?? [];
 
   return (
@@ -96,7 +95,9 @@ function WatchParty() {
       </header>
 
       <main className="watchparty-main">
-        {queueExhausted ? (
+        {loading ? (
+          <MovieCard loading />
+        ) : queueExhausted ? (
           <div className="watchparty-empty">
             <p>No more movies in the queue.</p>
             <p className="watchparty-empty-sub">

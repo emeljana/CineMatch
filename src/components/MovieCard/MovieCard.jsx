@@ -1,6 +1,21 @@
 import './MovieCard.css';
 
-function MovieCard({ movie }) {
+function MovieCard({ movie, loading = false }) {
+  if (loading) {
+    return (
+      <div className="movie-card" aria-busy="true" aria-label="Loading movie">
+        <div className="movie-card-poster movie-card-skeleton" />
+        <div className="movie-card-info">
+          <div className="movie-card-skeleton movie-card-skeleton--title" />
+          <div className="movie-card-skeleton movie-card-skeleton--year" />
+          <div className="movie-card-skeleton movie-card-skeleton--line" />
+          <div className="movie-card-skeleton movie-card-skeleton--line" />
+          <div className="movie-card-skeleton movie-card-skeleton--line-short" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="movie-card">
       {movie.posterUrl ? (
