@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
+import { useToast } from '../../context/toastContext';
 import Button from '../../components/Button/Button';
 import './ResetPassword.css';
 
@@ -10,6 +11,12 @@ function parseError(err) {
   return 'Something went wrong. Please try again.';
 }
 
+function validatePassword(password) {
+  if (password.length < 8) return 'Lösenordet måste vara minst 8 tecken.';
+  if (password.length > 100) return 'Lösenordet får inte vara längre än 100 tecken.';
+  return null;
+}
+
 function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
@@ -17,17 +24,23 @@ function ResetPassword() {
 
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [validationError, setValidationError] = useState(null);
+  const toast = useToast();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(null);
+    const nextError = validatePassword(newPassword);
+    setValidationError(nextError);
+    if (nextError) return;
+
     setLoading(true);
     try {
       await resetPassword(token, newPassword);
+      toast.success('Password updated. You can log in now.');
       navigate('/login');
     } catch (err) {
-      setError(parseError(err));
+      const message = parseError(err);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -53,23 +66,31 @@ function ResetPassword() {
         <h1 className="reset-password-logo">CineMatch</h1>
         <h2 className="reset-password-title">Nytt lösenord</h2>
 
-        <form onSubmit={handleSubmit} className="reset-password-form">
+        <form onSubmit={handleSubmit} className="reset-password-form" noValidate>
           <div className="form-group">
             <label htmlFor="new-password">Nytt lösenord</label>
             <input
               id="new-password"
               type="password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => {
+                setNewPassword(e.target.value);
+                setValidationError(null);
+              }}
               required
               minLength={8}
               maxLength={100}
               disabled={loading}
               autoComplete="new-password"
+              aria-invalid={Boolean(validationError)}
+              aria-describedby={validationError ? 'new-password-error' : undefined}
             />
+            {validationError && (
+              <p id="new-password-error" className="form-error">
+                {validationError}
+              </p>
+            )}
           </div>
-
-          {error && <p className="form-error">{error}</p>}
 
           <Button type="submit" disabled={loading} fullWidth>
             {loading ? 'Sparar...' : 'Spara nytt lösenord'}

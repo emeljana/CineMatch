@@ -26,7 +26,17 @@
   border-color: var(--color-accent);
 }
 
+.input-group input[aria-invalid='true'] {
+  border-color: var(--color-dislike);
+}
+
 .input-group input:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.input-error {
+  margin: 0;
+  color: var(--color-dislike);
+  font-size: 13px;
 }
