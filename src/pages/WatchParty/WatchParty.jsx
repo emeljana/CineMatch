@@ -3,41 +3,87 @@ import { useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
 import { useWatchParty } from '../../hooks/useWatchParty';
+import { useToast } from '../../context/toastContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import './WatchParty.css';
 
+const QUEUE_REFILL_THRESHOLD = 2;
+const QUEUE_BATCH_SIZE = 10;
+
 function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
-  const movieCardRef = useRef(null);
+  const toast = useToast();
 
   const [party, setParty] = useState(null);
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [swiping, setSwiping] = useState(false);
   const [cardAnimating, setCardAnimating] = useState(false);
+  const [queueRefilling, setQueueRefilling] = useState(false);
+  const [hasMoreMovies, setHasMoreMovies] = useState(true);
 
   useEffect(() => {
     async function init() {
       try {
         const [partyRes, queueRes] = await Promise.all([
           getWatchParty(id),
-          getQueue(id),
+          getQueue(id, QUEUE_BATCH_SIZE),
         ]);
         setParty(partyRes.data);
         setQueue(queueRes.data);
+        setHasMoreMovies(queueRes.data.length > 0);
       } catch {
-        setError('Could not load the party. It may no longer exist.');
+        setLoadFailed(true);
+        toast.error('Could not load the party. It may no longer exist.');
       } finally {
         setLoading(false);
       }
     }
     init();
-  }, [id]);
+  }, [id, toast]);
+
+  useEffect(() => {
+    const remainingMovies = queue.length - currentIndex;
+    const shouldRefillQueue =
+      !loading &&
+      !queueRefilling &&
+      hasMoreMovies &&
+      remainingMovies <= QUEUE_REFILL_THRESHOLD;
+
+    if (!shouldRefillQueue) return;
+
+    async function refillQueue() {
+      setQueueRefilling(true);
+      try {
+        const { data } = await getQueue(id, QUEUE_BATCH_SIZE);
+        if (data.length === 0) {
+          setHasMoreMovies(false);
+          return;
+        }
+
+        const queuedMovieIds = new Set(queue.map((movie) => movie.id));
+        const newMovies = data.filter((movie) => !queuedMovieIds.has(movie.id));
+
+        if (newMovies.length === 0) {
+          setHasMoreMovies(false);
+          return;
+        }
+
+        setQueue((currentQueue) => [...currentQueue, ...newMovies]);
+      } catch {
+        setHasMoreMovies(false);
+      } finally {
+        setQueueRefilling(false);
+      }
+    }
+
+    refillQueue();
+  }, [currentIndex, hasMoreMovies, id, loading, queue, queueRefilling]);
 
   async function handleSwipe(isLiked) {
     const currentMovie = queue[currentIndex];
@@ -51,7 +97,7 @@ function WatchParty() {
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
-      // skip and move on — the queue may have diverged
+      toast.error('Could not save your swipe.');
       setCurrentIndex((prev) => prev + 1);
     } finally {
       setSwiping(false);
@@ -74,11 +120,12 @@ function WatchParty() {
     setMatch(null);
   }
 
-  if (loading) return <div className="watchparty-status">Loading...</div>;
-  if (error) return <div className="watchparty-status watchparty-status--error">{error}</div>;
+  if (loadFailed) {
+    return <div className="watchparty-status watchparty-status--error">WatchParty unavailable.</div>;
+  }
 
   const currentMovie = queue[currentIndex];
-  const queueExhausted = currentIndex >= queue.length;
+  const queueExhausted = !loading && currentIndex >= queue.length;
   const activeMembers = party?.members?.filter((m) => m.isActive) ?? [];
 
   return (
@@ -87,9 +134,13 @@ function WatchParty() {
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>
           <span className="watchparty-code">{party?.joinCode}</span>
-          <span className="watchparty-members">
-            {activeMembers.length} member{activeMembers.length !== 1 ? 's' : ''}
-          </span>
+          <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
+            {activeMembers.map((m) => (
+              <span key={m.userId} className="member-avatar" title={m.username}>
+                {m.username.slice(0, 2).toUpperCase()}
+              </span>
+            ))}
+          </div>
         </div>
         <Button
           variant="secondary"
@@ -101,12 +152,18 @@ function WatchParty() {
       </header>
 
       <main className="watchparty-main">
-        {queueExhausted ? (
+        {loading ? (
+          <MovieCard loading />
+        ) : queueExhausted ? (
           <div className="watchparty-empty">
             <p>No more movies in the queue.</p>
             <p className="watchparty-empty-sub">
               Wait for new movies or check your matches.
             </p>
+          </div>
+        ) : !currentMovie ? (
+          <div className="watchparty-empty">
+            <p>Loading more movies...</p>
           </div>
         ) : (
           <>
@@ -117,6 +174,10 @@ function WatchParty() {
               onSwipe={handleSwipe}
               onSwipeStart={handleSwipeStart}
             />
+            <p className="swipe-progress" aria-live="polite">
+              Movie {currentIndex + 1} of {queue.length}
+            </p>
+            <MovieCard movie={currentMovie} />
             <div className="watchparty-actions">
               <Button
                 variant="dislike"

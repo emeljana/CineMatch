@@ -5,13 +5,31 @@ import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
 import './Login.css';
 
+function validateLogin(email, password) {
+  const errors = {};
+  if (!email.trim()) {
+    errors.email = 'Email is required.';
+  } else if (!email.includes('@')) {
+    errors.email = 'Enter a valid email address.';
+  }
+  if (!password) {
+    errors.password = 'Password is required.';
+  }
+  return errors;
+}
+
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { handleLogin, loading, error } = useAuth();
+  const [fieldErrors, setFieldErrors] = useState({});
+  const { handleLogin, loading, error, setError } = useAuth();
 
   async function handleSubmit(e) {
     e.preventDefault();
+    const nextErrors = validateLogin(email, password);
+    setFieldErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     await handleLogin(email, password);
   }
 
@@ -21,13 +39,18 @@ function Login() {
         <h1 className="login-logo">CineMatch</h1>
         <h2 className="login-title">Log in</h2>
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="login-form" noValidate>
           <Input
             id="email"
             type="email"
             label="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setFieldErrors((currentErrors) => ({ ...currentErrors, email: null }));
+              setError(null);
+            }}
+            error={fieldErrors.email}
             required
             disabled={loading}
             autoComplete="email"
@@ -38,7 +61,12 @@ function Login() {
             type="password"
             label="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setFieldErrors((currentErrors) => ({ ...currentErrors, password: null }));
+              setError(null);
+            }}
+            error={fieldErrors.password}
             required
             disabled={loading}
             autoComplete="current-password"

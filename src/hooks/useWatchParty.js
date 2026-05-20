@@ -6,6 +6,7 @@ import {
   leaveWatchParty,
 } from '../services/watchPartyService';
 import { useWatchParty as useWatchPartyContext } from '../context/watchPartyContext';
+import { useToast } from '../context/toastContext';
 
 function parseError(err) {
   const errors = err.response?.data;
@@ -15,51 +16,54 @@ function parseError(err) {
 
 export function useWatchParty() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const { setWatchParty } = useWatchPartyContext();
+  const toast = useToast();
   const navigate = useNavigate();
 
   async function handleCreate() {
-    setError(null);
     setLoading(true);
     try {
       const { data } = await createWatchParty();
       setWatchParty(data);
-      navigate(`/watchparty/${data.id}`);
+      toast.success('WatchParty created.');
+      navigate(`/watchparty/${data.id}/lobby`);
     } catch (err) {
-      setError(parseError(err));
+      const message = parseError(err);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   }
 
   async function handleJoin(joinCode) {
-    setError(null);
     setLoading(true);
     try {
       const { data } = await joinWatchParty(joinCode);
       setWatchParty(data);
-      navigate(`/watchparty/${data.id}`);
+      toast.success('Joined WatchParty.');
+      navigate(`/watchparty/${data.id}/lobby`);
     } catch (err) {
-      setError(parseError(err));
+      const message = parseError(err);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   }
 
   async function handleLeave(id) {
-    setError(null);
     setLoading(true);
     try {
       await leaveWatchParty(id);
       setWatchParty(null);
+      toast.info('You left the WatchParty.');
       navigate('/home');
     } catch (err) {
-      setError(parseError(err));
+      const message = parseError(err);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   }
 
-  return { handleCreate, handleJoin, handleLeave, loading, error, setError };
+  return { handleCreate, handleJoin, handleLeave, loading };
 }

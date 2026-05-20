@@ -113,3 +113,43 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+@keyframes shimmer {
+  0% { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.movie-card-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    var(--color-border) 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: var(--radius-sm);
+}
+
+.movie-card-skeleton--title {
+  height: 22px;
+  width: 65%;
+  margin-bottom: 8px;
+}
+
+.movie-card-skeleton--year {
+  height: 13px;
+  width: 25%;
+  margin-bottom: 14px;
+}
+
+.movie-card-skeleton--line {
+  height: 13px;
+  width: 100%;
+  margin-bottom: 6px;
+}
+
+.movie-card-skeleton--line-short {
+  height: 13px;
+  width: 55%;
+}
