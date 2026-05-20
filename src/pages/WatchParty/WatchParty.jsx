@@ -8,6 +8,9 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import './WatchParty.css';
 
+const QUEUE_REFILL_THRESHOLD = 2;
+const QUEUE_BATCH_SIZE = 10;
+
 function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
@@ -20,16 +23,19 @@ function WatchParty() {
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [swiping, setSwiping] = useState(false);
+  const [queueRefilling, setQueueRefilling] = useState(false);
+  const [hasMoreMovies, setHasMoreMovies] = useState(true);
 
   useEffect(() => {
     async function init() {
       try {
         const [partyRes, queueRes] = await Promise.all([
           getWatchParty(id),
-          getQueue(id),
+          getQueue(id, QUEUE_BATCH_SIZE),
         ]);
         setParty(partyRes.data);
         setQueue(queueRes.data);
+        setHasMoreMovies(queueRes.data.length > 0);
       } catch {
         setLoadFailed(true);
         toast.error('Could not load the party. It may no longer exist.');
@@ -39,6 +45,44 @@ function WatchParty() {
     }
     init();
   }, [id, toast]);
+
+  useEffect(() => {
+    const remainingMovies = queue.length - currentIndex;
+    const shouldRefillQueue =
+      !loading &&
+      !queueRefilling &&
+      hasMoreMovies &&
+      remainingMovies <= QUEUE_REFILL_THRESHOLD;
+
+    if (!shouldRefillQueue) return;
+
+    async function refillQueue() {
+      setQueueRefilling(true);
+      try {
+        const { data } = await getQueue(id, QUEUE_BATCH_SIZE);
+        if (data.length === 0) {
+          setHasMoreMovies(false);
+          return;
+        }
+
+        const queuedMovieIds = new Set(queue.map((movie) => movie.id));
+        const newMovies = data.filter((movie) => !queuedMovieIds.has(movie.id));
+
+        if (newMovies.length === 0) {
+          setHasMoreMovies(false);
+          return;
+        }
+
+        setQueue((currentQueue) => [...currentQueue, ...newMovies]);
+      } catch {
+        setHasMoreMovies(false);
+      } finally {
+        setQueueRefilling(false);
+      }
+    }
+
+    refillQueue();
+  }, [currentIndex, hasMoreMovies, id, loading, queue, queueRefilling]);
 
   async function handleSwipe(isLiked) {
     const currentMovie = queue[currentIndex];
@@ -103,6 +147,10 @@ function WatchParty() {
             <p className="watchparty-empty-sub">
               Wait for new movies or check your matches.
             </p>
+          </div>
+        ) : !currentMovie ? (
+          <div className="watchparty-empty">
+            <p>Loading more movies...</p>
           </div>
         ) : (
           <>
