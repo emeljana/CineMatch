@@ -10,6 +10,7 @@ import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import Landing from './pages/Landing/Landing';
 import Home from './pages/Home/Home';
+import Lobby from './pages/Lobby/Lobby';
 import WatchParty from './pages/WatchParty/WatchParty';
 import NotFound from './pages/NotFound/NotFound';
 
@@ -29,6 +30,7 @@ function App() {
               </Route>
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<Home />} />
+                <Route path="/watchparty/:id/lobby" element={<Lobby />} />
                 <Route path="/watchparty/:id" element={<WatchParty />} />
               </Route>
               <Route path="*" element={<NotFound />} />

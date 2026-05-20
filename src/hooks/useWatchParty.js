@@ -26,7 +26,7 @@ export function useWatchParty() {
       const { data } = await createWatchParty();
       setWatchParty(data);
       toast.success('WatchParty created.');
-      navigate(`/watchparty/${data.id}`);
+      navigate(`/watchparty/${data.id}/lobby`);
     } catch (err) {
       const message = parseError(err);
       toast.error(message);
@@ -41,7 +41,7 @@ export function useWatchParty() {
       const { data } = await joinWatchParty(joinCode);
       setWatchParty(data);
       toast.success('Joined WatchParty.');
-      navigate(`/watchparty/${data.id}`);
+      navigate(`/watchparty/${data.id}/lobby`);
     } catch (err) {
       const message = parseError(err);
       toast.error(message);
