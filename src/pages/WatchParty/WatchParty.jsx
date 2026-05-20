@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
@@ -10,6 +10,7 @@ import './WatchParty.css';
 function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
+  const movieCardRef = useRef(null);
 
   const [party, setParty] = useState(null);
   const [queue, setQueue] = useState([]);
@@ -18,6 +19,7 @@ function WatchParty() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [swiping, setSwiping] = useState(false);
+  const [cardAnimating, setCardAnimating] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -53,7 +55,19 @@ function WatchParty() {
       setCurrentIndex((prev) => prev + 1);
     } finally {
       setSwiping(false);
+      setCardAnimating(false);
     }
+  }
+
+  function handleSwipeStart() {
+    setCardAnimating(true);
+  }
+
+  function triggerSwipeAnimation(direction) {
+    const currentMovie = queue[currentIndex];
+    if (!currentMovie || swiping || cardAnimating) return;
+
+    movieCardRef.current?.swipe(direction);
   }
 
   function dismissMatch() {
@@ -96,19 +110,25 @@ function WatchParty() {
           </div>
         ) : (
           <>
-            <MovieCard movie={currentMovie} />
+            <MovieCard
+              key={currentMovie.id}
+              ref={movieCardRef}
+              movie={currentMovie}
+              onSwipe={handleSwipe}
+              onSwipeStart={handleSwipeStart}
+            />
             <div className="watchparty-actions">
               <Button
                 variant="dislike"
-                onClick={() => handleSwipe(false)}
-                disabled={swiping}
+                onClick={() => triggerSwipeAnimation('dislike')}
+                disabled={swiping || cardAnimating}
               >
                 Pass
               </Button>
               <Button
                 variant="like"
-                onClick={() => handleSwipe(true)}
-                disabled={swiping}
+                onClick={() => triggerSwipeAnimation('like')}
+                disabled={swiping || cardAnimating}
               >
                 Like
               </Button>
