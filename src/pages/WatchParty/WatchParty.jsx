@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
 import { useWatchParty } from '../../hooks/useWatchParty';
+import { useToast } from '../../context/toastContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import './WatchParty.css';
@@ -13,13 +14,14 @@ const QUEUE_BATCH_SIZE = 10;
 function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
+  const toast = useToast();
 
   const [party, setParty] = useState(null);
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [swiping, setSwiping] = useState(false);
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
@@ -35,13 +37,14 @@ function WatchParty() {
         setQueue(queueRes.data);
         setHasMoreMovies(queueRes.data.length > 0);
       } catch {
-        setError('Could not load the party. It may no longer exist.');
+        setLoadFailed(true);
+        toast.error('Could not load the party. It may no longer exist.');
       } finally {
         setLoading(false);
       }
     }
     init();
-  }, [id]);
+  }, [id, toast]);
 
   useEffect(() => {
     const remainingMovies = queue.length - currentIndex;
@@ -93,7 +96,7 @@ function WatchParty() {
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
-      // skip and move on — the queue may have diverged
+      toast.error('Could not save your swipe.');
       setCurrentIndex((prev) => prev + 1);
     } finally {
       setSwiping(false);
@@ -104,11 +107,12 @@ function WatchParty() {
     setMatch(null);
   }
 
-  if (loading) return <div className="watchparty-status">Loading...</div>;
-  if (error) return <div className="watchparty-status watchparty-status--error">{error}</div>;
+  if (loadFailed) {
+    return <div className="watchparty-status watchparty-status--error">WatchParty unavailable.</div>;
+  }
 
   const currentMovie = queue[currentIndex];
-  const queueExhausted = currentIndex >= queue.length && !queueRefilling;
+  const queueExhausted = !loading && currentIndex >= queue.length;
   const activeMembers = party?.members?.filter((m) => m.isActive) ?? [];
 
   return (
@@ -117,9 +121,13 @@ function WatchParty() {
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>
           <span className="watchparty-code">{party?.joinCode}</span>
-          <span className="watchparty-members">
-            {activeMembers.length} member{activeMembers.length !== 1 ? 's' : ''}
-          </span>
+          <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
+            {activeMembers.map((m) => (
+              <span key={m.userId} className="member-avatar" title={m.username}>
+                {m.username.slice(0, 2).toUpperCase()}
+              </span>
+            ))}
+          </div>
         </div>
         <Button
           variant="secondary"
@@ -131,7 +139,9 @@ function WatchParty() {
       </header>
 
       <main className="watchparty-main">
-        {queueExhausted ? (
+        {loading ? (
+          <MovieCard loading />
+        ) : queueExhausted ? (
           <div className="watchparty-empty">
             <p>No more movies in the queue.</p>
             <p className="watchparty-empty-sub">
@@ -144,6 +154,9 @@ function WatchParty() {
           </div>
         ) : (
           <>
+            <p className="swipe-progress" aria-live="polite">
+              Movie {currentIndex + 1} of {queue.length}
+            </p>
             <MovieCard movie={currentMovie} />
             <div className="watchparty-actions">
               <Button

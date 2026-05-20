@@ -6,6 +6,7 @@ function Input({
   value,
   onChange,
   label,
+  error,
   disabled,
   required,
   placeholder,
@@ -22,8 +23,15 @@ function Input({
         disabled={disabled}
         required={required}
         placeholder={placeholder}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${id}-error` : undefined}
         {...inputProps}
       />
+      {error && (
+        <p id={`${id}-error`} className="input-error">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
