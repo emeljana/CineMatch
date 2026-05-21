@@ -201,17 +201,29 @@ function WatchParty() {
       {match && (
         <div className="match-overlay" onClick={dismissMatch}>
           <div className="match-card" onClick={(e) => e.stopPropagation()}>
-            <p className="match-label">It's a match!</p>
-            <h2 className="match-title">{match.title}</h2>
-            {match.posterUrl && (
-              <img
-                src={match.posterUrl}
-                alt={match.title}
-                className="match-poster"
-              />
-            )}
+            <div className="match-poster-frame">
+              {match.posterUrl ? (
+                <img
+                  src={match.posterUrl}
+                  alt={match.title}
+                  className="match-poster"
+                />
+              ) : (
+                <div className="match-poster-placeholder" />
+              )}
+            </div>
+            <div className="match-details">
+              <p className="match-label">Det är en match!</p>
+              <h2 className="match-title">{match.title}</h2>
+              {match.releaseYear && (
+                <p className="match-year">{match.releaseYear}</p>
+              )}
+              {match.overview && (
+                <p className="match-overview">{match.overview}</p>
+              )}
+            </div>
             <Button onClick={dismissMatch} fullWidth>
-              Continue swiping
+              Fortsätt svepa
             </Button>
           </div>
         </div>
