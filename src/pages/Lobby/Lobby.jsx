@@ -11,7 +11,6 @@ import CurtainScene from '../../components/cinema/CurtainScene';
 import './Lobby.css';
 
 const POLL_INTERVAL_MS = 5000;
-const CURTAIN_OPEN_MS = 1200;
 
 function Lobby() {
   const { id } = useParams();
@@ -25,7 +24,6 @@ function Lobby() {
   const [loadFailed, setLoadFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
-  const [curtainsOpen, setCurtainsOpen] = useState(false);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
@@ -98,7 +96,6 @@ function Lobby() {
   return (
     <div className="lobby-page">
       <CurtainScene
-        isOpen={curtainsOpen}
         variant="backdrop"
         className="lobby-cinema-backdrop"
       />
@@ -148,32 +145,32 @@ function Lobby() {
 
         <section className="lobby-actions">
           {isHost ? (
-            <Button onClick={handleStartSession} disabled={curtainsOpen}>
-              {curtainsOpen ? 'Öppnar salongen...' : 'Starta session'}
+            <Button onClick={handleStartSession} disabled={starting}>
+              {starting ? 'Starting...' : 'Start session'}
             </Button>
           ) : (
-            <p className="lobby-waiting">Väntar på att hosten startar...</p>
+            <p className="lobby-waiting">Waiting for the host to start...</p>
           )}
         </section>
       </main>
       <Modal
         isOpen={confirmLeaveOpen}
         onClose={() => setConfirmLeaveOpen(false)}
-        title="Lämna partyt?"
+        title="Leave party?"
       >
         <p className="modal-body">
-          Om du lämnar som host stängs partyt för alla deltagare.
+          If you leave as host, the party will end for all participants.
         </p>
         <div className="modal-actions">
           <Button variant="secondary" onClick={() => setConfirmLeaveOpen(false)}>
-            Avbryt
+            Cancel
           </Button>
           <Button
             variant="danger"
             onClick={() => { setConfirmLeaveOpen(false); handleLeave(id); }}
             disabled={leaveLoading}
           >
-            Lämna ändå
+            Leave anyway
           </Button>
         </div>
       </Modal>
