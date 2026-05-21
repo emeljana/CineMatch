@@ -63,7 +63,7 @@ function Lobby() {
       isMounted = false;
       window.clearInterval(intervalId);
     };
-  }, [id, toast]);
+  }, [id, navigate, toast]);
 
   async function handleStartSession() {
     setStarting(true);

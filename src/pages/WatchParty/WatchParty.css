@@ -251,6 +251,65 @@
   color: var(--color-like);
 }
 
+@media (min-width: 641px) {
+  .watchparty-main {
+    position: absolute;
+    top: clamp(16px, 2vh, 42px);
+    left: 50%;
+    width: min(300px, 24vw);
+    min-height: 0;
+    padding: 0;
+    transform: translateX(-50%);
+  }
+
+  .watchparty-main .movie-card {
+    width: min(285px, 100%);
+    max-width: 100%;
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(13, 14, 20, 0.88);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.56);
+  }
+
+  .watchparty-main .movie-card-poster,
+  .watchparty-main .movie-card-poster-placeholder {
+    max-height: min(340px, 40vh);
+  }
+
+  .watchparty-main .movie-card-info {
+    padding: 12px 14px;
+  }
+
+  .watchparty-main .movie-card-title {
+    font-size: 16px;
+    line-height: 1.15;
+  }
+
+  .watchparty-main .movie-card-year {
+    font-size: 12px;
+  }
+
+  .watchparty-main .movie-card-info-toggle {
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    font-size: 17px;
+  }
+
+  .swipe-progress {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  }
+
+  .watchparty-actions {
+    gap: 14px;
+  }
+
+  .watchparty-actions .btn {
+    min-width: 112px;
+    padding: 11px 24px;
+  }
+}
+
 @media (max-width: 640px) {
   .match-overlay {
     align-items: flex-start;

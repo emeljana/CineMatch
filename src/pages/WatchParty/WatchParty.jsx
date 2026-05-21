@@ -40,10 +40,7 @@ function WatchParty() {
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
   const [matchCount, setMatchCount] = useState(0);
-  const [curtainsOpen, setCurtainsOpen] = useState(() => {
-    const saved = sessionStorage.getItem(swipeSessionKey(id));
-    return saved ? (JSON.parse(saved).curtainsOpen ?? false) : false;
-  });
+  const curtainsOpen = true;
 
   useEffect(() => {
     async function init() {
@@ -113,10 +110,6 @@ function WatchParty() {
 
     refillQueue();
   }, [currentIndex, hasMoreMovies, id, loading, queue, queueRefilling]);
-
-  useEffect(() => {
-    setCurtainsOpen(true);
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (loading || queue.length === 0) return;
