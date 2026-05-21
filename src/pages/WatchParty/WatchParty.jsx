@@ -10,6 +10,7 @@ import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
 import Modal from '../../components/ui/Modal/Modal';
+import CurtainScene from '../../components/cinema/CurtainScene';
 import './WatchParty.css';
 
 const QUEUE_REFILL_THRESHOLD = 2;
@@ -190,6 +191,11 @@ function WatchParty() {
 
   return (
     <div className="watchparty-page">
+      <CurtainScene
+        isOpen
+        variant="backdrop"
+        className="watchparty-cinema-backdrop"
+      />
       <header className="watchparty-header">
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>

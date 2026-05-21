@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import heroImage from '../../assets/hero.png';
+import CurtainScene from '../../components/cinema/CurtainScene';
 import './Landing.css';
 
 function Landing() {
@@ -19,24 +19,20 @@ function Landing() {
 
       <main>
         <section className="landing-hero">
-          <div className="landing-hero-content">
+          <CurtainScene>
             <p className="landing-kicker">WatchParty movie matching</p>
             <h1>CineMatch</h1>
             <p className="landing-copy">
               Find the movie everyone wants to watch by swiping together with your friends.
             </p>
-            <div className="landing-actions">
-              <Link to="/register" className="landing-primary-action">
-                Create account
-              </Link>
-              <Link to="/login" className="landing-secondary-action">
-                Log in
-              </Link>
-            </div>
-          </div>
-
-          <div className="landing-visual" aria-hidden="true">
-            <img src={heroImage} alt="" />
+          </CurtainScene>
+          <div className="landing-actions" aria-label="Get started">
+            <Link to="/register" className="landing-primary-action">
+              Create account
+            </Link>
+            <Link to="/login" className="landing-secondary-action">
+              Log in
+            </Link>
           </div>
         </section>
 

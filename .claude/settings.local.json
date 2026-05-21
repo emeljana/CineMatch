@@ -28,7 +28,28 @@
       "PowerShell(Test-Path \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\\\\CLAUDE.md\"; Get-ChildItem \"C:\\\\DevSpace\\\\HA\\\\Webbapplikationer\\\\CineMatch\" -Force | Where-Object { -not $_.PSIsContainer } | Select-Object Name)",
       "Bash(git reset *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(Get-ChildItem -Path \"E:\\\\Plugg\\\\HA\\\\07. WEBB\\\\Grupprojekt\\\\CineMatch\" -Recurse -Name -Include \"*.jsx\", \"*.js\", \"*.json\")",
+      "Bash(Select-Object -First 30)",
+      "Bash(xargs grep -l \"class WatchParty\")",
+      "Bash(xargs grep -l \"handleStartSession\\\\|/watchparty/\")",
+      "Bash(Get-ChildItem -Path \"E:\\\\Plugg\\\\HA\\\\07. WEBB\\\\Grupprojekt\\\\CineMatch-Backend\" -Recurse)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Format-Table FullName)",
+      "Bash(New-Item -ItemType Directory -Force \"E:\\\\Plugg\\\\HA\\\\07. WEBB\\\\Grupprojekt\\\\CineMatch-Backend\\\\src\\\\CineMatch.Application\\\\Features\\\\WatchParties\\\\Commands\\\\StartWatchParty\")",
+      "Bash(Out-Null)",
+      "Bash(dotnet ef *)",
+      "Bash(dotnet build *)",
+      "Bash(git push *)",
+      "Bash(dotnet test *)",
+      "Bash(npm ls *)",
+      "Bash(npm run *)",
+      "Bash(curl -s \"http://localhost:5173/src/components/cinema/CurtainScene.jsx\")",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":5173\")",
+      "Bash(tasklist *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)"
     ]
   }
 }
