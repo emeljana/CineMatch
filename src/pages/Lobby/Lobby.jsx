@@ -5,6 +5,7 @@ import { useUser } from '../../context/userContext';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import Button from '../../components/Button/Button';
+import JoinCode from '../../components/party/JoinCode/JoinCode';
 import './Lobby.css';
 
 const POLL_INTERVAL_MS = 5000;
@@ -87,7 +88,7 @@ function Lobby() {
       <main className="lobby-main">
         <section className="lobby-code-panel" aria-label="Join code">
           <span className="lobby-code-label">Join code</span>
-          <strong className="lobby-code">{party?.joinCode}</strong>
+          <JoinCode code={party?.joinCode} />
         </section>
 
         <section className="lobby-content">
