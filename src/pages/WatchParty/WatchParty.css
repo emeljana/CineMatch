@@ -1,9 +1,20 @@
 .watchparty-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100dvh;
   overflow: hidden;
   background: var(--color-bg);
+}
+
+.watchparty-cinema-backdrop {
+  z-index: 0;
+}
+
+.watchparty-page > .watchparty-header,
+.watchparty-page > .watchparty-main {
+  position: relative;
+  z-index: 2;
 }
 
 .watchparty-status {
@@ -25,7 +36,8 @@
   justify-content: space-between;
   padding: 16px 24px;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: rgba(26, 27, 37, 0.9);
+  backdrop-filter: blur(10px);
 }
 
 .watchparty-meta {
@@ -101,6 +113,10 @@
   justify-content: center;
   padding: 16px 24px;
   gap: 12px;
+}
+
+.watchparty-main .movie-card {
+  background: rgba(26, 27, 37, 0.96);
 }
 
 .swipe-progress {

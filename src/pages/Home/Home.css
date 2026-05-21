@@ -1,8 +1,29 @@
 .home-page {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   background: var(--color-bg);
+  overflow: hidden;
+}
+
+.home-cinema-scene {
+  z-index: 0;
+}
+
+.home-page > .home-header,
+.home-page > .home-main {
+  position: relative;
+  z-index: 2;
+}
+
+.home-header,
+.home-card {
+  backdrop-filter: blur(10px);
+}
+
+.home-card {
+  background: rgba(26, 27, 37, 0.86);
 }
 
 .home-header {

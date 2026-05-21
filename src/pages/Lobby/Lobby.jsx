@@ -7,9 +7,11 @@ import { useToast } from '../../context/toastContext';
 import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
 import Modal from '../../components/ui/Modal/Modal';
+import CurtainScene from '../../components/cinema/CurtainScene';
 import './Lobby.css';
 
 const POLL_INTERVAL_MS = 5000;
+const CURTAIN_OPEN_MS = 1200;
 
 function Lobby() {
   const { id } = useParams();
@@ -23,6 +25,7 @@ function Lobby() {
   const [loadFailed, setLoadFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
+  const [curtainsOpen, setCurtainsOpen] = useState(false);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
@@ -94,6 +97,11 @@ function Lobby() {
 
   return (
     <div className="lobby-page">
+      <CurtainScene
+        isOpen={curtainsOpen}
+        variant="backdrop"
+        className="lobby-cinema-backdrop"
+      />
       <header className="lobby-header">
         <div>
           <span className="lobby-logo">CineMatch</span>
@@ -140,8 +148,8 @@ function Lobby() {
 
         <section className="lobby-actions">
           {isHost ? (
-            <Button onClick={handleStartSession} disabled={starting}>
-              {starting ? 'Startar...' : 'Starta session'}
+            <Button onClick={handleStartSession} disabled={curtainsOpen}>
+              {curtainsOpen ? 'Öppnar salongen...' : 'Starta session'}
             </Button>
           ) : (
             <p className="lobby-waiting">Väntar på att hosten startar...</p>

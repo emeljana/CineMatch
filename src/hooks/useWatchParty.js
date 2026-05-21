@@ -20,31 +20,35 @@ export function useWatchParty() {
   const toast = useToast();
   const navigate = useNavigate();
 
-  async function handleCreate() {
+  async function handleCreate({ navigateOnSuccess = true } = {}) {
     setLoading(true);
     try {
       const { data } = await createWatchParty();
       setWatchParty(data);
       toast.success('WatchParty created.');
-      navigate(`/watchparty/${data.id}/lobby`);
+      if (navigateOnSuccess) navigate(`/watchparty/${data.id}/lobby`);
+      return data;
     } catch (err) {
       const message = parseError(err);
       toast.error(message);
+      return null;
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleJoin(joinCode) {
+  async function handleJoin(joinCode, { navigateOnSuccess = true } = {}) {
     setLoading(true);
     try {
       const { data } = await joinWatchParty(joinCode);
       setWatchParty(data);
       toast.success('Joined WatchParty.');
-      navigate(`/watchparty/${data.id}/lobby`);
+      if (navigateOnSuccess) navigate(`/watchparty/${data.id}/lobby`);
+      return data;
     } catch (err) {
       const message = parseError(err);
       toast.error(message);
+      return null;
     } finally {
       setLoading(false);
     }

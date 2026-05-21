@@ -1,18 +1,30 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/userContext';
 import { useAuth } from '../../hooks/useAuth';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import Button from '../../components/Button/Button';
+import CurtainScene from '../../components/cinema/CurtainScene';
 import './Home.css';
 
 const JOIN_CODE_LENGTH = 6;
+const CURTAIN_OPEN_MS = 1600;
 
 function Home() {
   const { user } = useUser();
   const { handleLogout } = useAuth();
   const { handleCreate, handleJoin, loading } = useWatchParty();
+  const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState('');
   const [joinCodeError, setJoinCodeError] = useState(null);
+  const [curtainsOpen, setCurtainsOpen] = useState(false);
+
+  async function handleCreateWithAnimation() {
+    const data = await handleCreate({ navigateOnSuccess: false });
+    if (!data) return;
+    setCurtainsOpen(true);
+    window.setTimeout(() => navigate(`/watchparty/${data.id}/lobby`), CURTAIN_OPEN_MS);
+  }
 
   async function handleJoinSubmit(e) {
     e.preventDefault();
@@ -21,7 +33,10 @@ function Home() {
       return;
     }
 
-    await handleJoin(joinCode.toUpperCase());
+    const data = await handleJoin(joinCode.toUpperCase(), { navigateOnSuccess: false });
+    if (!data) return;
+    setCurtainsOpen(true);
+    window.setTimeout(() => navigate(`/watchparty/${data.id}/lobby`), CURTAIN_OPEN_MS);
   }
 
   function handleJoinCodeChange(e) {
@@ -34,6 +49,11 @@ function Home() {
 
   return (
     <div className="home-page">
+      <CurtainScene
+        variant="backdrop"
+        className="home-cinema-scene"
+        isOpen={curtainsOpen}
+      />
       <header className="home-header">
         <span className="home-logo">CineMatch</span>
         <div className="home-header-right">
@@ -52,7 +72,7 @@ function Home() {
           <div className="home-card">
             <h2>Create a party</h2>
             <p>Start a new WatchParty and invite your friends with a join code.</p>
-            <Button onClick={handleCreate} disabled={loading} fullWidth>
+            <Button onClick={handleCreateWithAnimation} disabled={loading || curtainsOpen} fullWidth>
               {loading ? 'Creating...' : 'Create WatchParty'}
             </Button>
           </div>
@@ -69,7 +89,7 @@ function Home() {
                 onChange={handleJoinCodeChange}
                 placeholder="ABC123"
                 maxLength={JOIN_CODE_LENGTH}
-                disabled={loading}
+                disabled={loading || curtainsOpen}
                 className="home-join-input"
                 aria-label="Join code"
                 aria-invalid={Boolean(joinCodeError)}
@@ -82,7 +102,7 @@ function Home() {
               )}
               <Button
                 type="submit"
-                disabled={loading}
+                disabled={loading || curtainsOpen}
                 fullWidth
               >
                 {loading ? 'Joining...' : 'Join WatchParty'}
