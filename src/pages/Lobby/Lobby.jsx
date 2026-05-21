@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getWatchParty } from '../../services/watchPartyService';
+import { getWatchParty, startWatchParty } from '../../services/watchPartyService';
 import { useUser } from '../../context/userContext';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
@@ -23,6 +23,7 @@ function Lobby() {
   const [loadFailed, setLoadFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -35,6 +36,10 @@ function Lobby() {
         if (!isMounted) return;
         setParty(data);
         setLoadFailed(false);
+
+        if (data.isStarted) {
+          navigate(`/watchparty/${id}`);
+        }
       } catch {
         if (!isMounted) return;
         setLoadFailed(true);
@@ -59,8 +64,16 @@ function Lobby() {
     };
   }, [id, toast]);
 
-  function handleStartSession() {
-    navigate(`/watchparty/${id}`);
+  async function handleStartSession() {
+    setStarting(true);
+    try {
+      await startWatchParty(id);
+      navigate(`/watchparty/${id}`);
+    } catch {
+      toast.error('Could not start the session. Try again.');
+    } finally {
+      setStarting(false);
+    }
   }
 
   function onLeaveClick() {
@@ -127,8 +140,8 @@ function Lobby() {
 
         <section className="lobby-actions">
           {isHost ? (
-            <Button onClick={handleStartSession}>
-              Starta session
+            <Button onClick={handleStartSession} disabled={starting}>
+              {starting ? 'Startar...' : 'Starta session'}
             </Button>
           ) : (
             <p className="lobby-waiting">Väntar på att hosten startar...</p>
