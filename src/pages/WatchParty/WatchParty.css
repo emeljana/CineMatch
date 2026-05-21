@@ -1,7 +1,8 @@
 .watchparty-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--color-bg);
 }
 
@@ -69,13 +70,13 @@
 }
 
 .watchparty-main {
-  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px;
-  gap: 32px;
+  padding: 16px 24px;
+  gap: 12px;
 }
 
 .swipe-progress {
