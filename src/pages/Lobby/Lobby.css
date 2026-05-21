@@ -72,11 +72,10 @@
   letter-spacing: 0.08em;
 }
 
-.lobby-code {
+.lobby-code-panel .join-code-value {
   font-size: 42px;
   line-height: 1;
   letter-spacing: 8px;
-  color: var(--color-accent);
 }
 
 .lobby-content {
@@ -168,7 +167,7 @@
     flex-direction: column;
   }
 
-  .lobby-code {
+  .lobby-code-panel .join-code-value {
     font-size: 34px;
     letter-spacing: 5px;
   }

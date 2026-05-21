@@ -67,3 +67,12 @@
 .btn--dislike:hover:not(:disabled) {
   opacity: 0.88;
 }
+
+.btn--danger {
+  background: var(--color-dislike);
+  color: #fff;
+}
+
+.btn--danger:hover:not(:disabled) {
+  opacity: 0.88;
+}

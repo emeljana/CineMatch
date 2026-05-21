@@ -5,8 +5,11 @@ import { getQueue, swipe } from '../../services/swipeService';
 import { getMatches } from '../../services/matchService';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
+import { useUser } from '../../context/userContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
+import JoinCode from '../../components/party/JoinCode/JoinCode';
+import Modal from '../../components/ui/Modal/Modal';
 import './WatchParty.css';
 
 const QUEUE_REFILL_THRESHOLD = 2;
@@ -16,6 +19,7 @@ function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
   const toast = useToast();
+  const { user } = useUser();
 
   const movieCardRef = useRef(null);
 
@@ -25,7 +29,9 @@ function WatchParty() {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
   const [swiping, setSwiping] = useState(false);
+  const [swipeError, setSwipeError] = useState(false);
   const [cardAnimating, setCardAnimating] = useState(false);
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
@@ -96,6 +102,7 @@ function WatchParty() {
     if (!currentMovie || swiping) return;
 
     setSwiping(true);
+    setSwipeError(false);
     try {
       const { data } = await swipe(id, currentMovie.id, isLiked);
       if (data.isMatch) {
@@ -104,8 +111,8 @@ function WatchParty() {
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
-      toast.error('Could not save your swipe.');
-      setCurrentIndex((prev) => prev + 1);
+      toast.error('Could not save your swipe. Try again or skip the movie.');
+      setSwipeError(true);
     } finally {
       setSwiping(false);
       setCardAnimating(false);
@@ -121,6 +128,19 @@ function WatchParty() {
     if (!currentMovie || swiping || cardAnimating) return;
 
     movieCardRef.current?.swipe(direction);
+  }
+
+  function skipCurrentMovie() {
+    setSwipeError(false);
+    setCurrentIndex((prev) => prev + 1);
+  }
+
+  function onLeaveClick() {
+    if (party?.hostUsername === user?.username) {
+      setConfirmLeaveOpen(true);
+    } else {
+      handleLeave(id);
+    }
   }
 
   function dismissMatch() {
@@ -140,7 +160,7 @@ function WatchParty() {
       <header className="watchparty-header">
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>
-          <span className="watchparty-code">{party?.joinCode}</span>
+          <JoinCode code={party?.joinCode} />
           <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
             {activeMembers.map((m) => (
               <span key={m.userId} className="member-avatar" title={m.username}>
@@ -205,9 +225,36 @@ function WatchParty() {
                 Like
               </Button>
             </div>
+            {swipeError && (
+              <button className="skip-link" onClick={skipCurrentMovie}>
+                Skip this movie
+              </button>
+            )}
           </>
         )}
       </main>
+
+      <Modal
+        isOpen={confirmLeaveOpen}
+        onClose={() => setConfirmLeaveOpen(false)}
+        title="Lämna partyt?"
+      >
+        <p className="modal-body">
+          Om du lämnar som host stängs partyt för alla deltagare.
+        </p>
+        <div className="modal-actions">
+          <Button variant="secondary" onClick={() => setConfirmLeaveOpen(false)}>
+            Avbryt
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => { setConfirmLeaveOpen(false); handleLeave(id); }}
+            disabled={leaveLoading}
+          >
+            Lämna ändå
+          </Button>
+        </div>
+      </Modal>
 
       {match && (
         <div className="match-overlay" onClick={dismissMatch}>

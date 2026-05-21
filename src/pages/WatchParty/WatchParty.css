@@ -41,11 +41,9 @@
   letter-spacing: 0.08em;
 }
 
-.watchparty-code {
+.watchparty-meta .join-code-value {
   font-size: 18px;
-  font-weight: 700;
   letter-spacing: 3px;
-  color: var(--color-accent);
 }
 
 .member-avatars {
@@ -111,9 +109,28 @@
   letter-spacing: 0.04em;
 }
 
+.watchparty-main .movie-card-poster {
+  max-height: calc(100dvh - 325px);
+}
+
 .watchparty-actions {
   display: flex;
   gap: 24px;
+}
+
+.skip-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.skip-link:hover {
+  color: var(--color-text);
 }
 
 .watchparty-empty {
