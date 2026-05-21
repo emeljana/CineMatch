@@ -11,3 +11,6 @@ export const leaveWatchParty = (id) =>
 
 export const getWatchParty = (id) =>
   api.get(`/watchparties/${id}`);
+
+export const startWatchParty = (id) =>
+  api.post(`/watchparties/${id}/start`);

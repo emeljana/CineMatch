@@ -10,13 +10,12 @@ const MATCH_TIME_FORMATTER = new Intl.DateTimeFormat('sv-SE', {
   timeStyle: 'short',
 });
 
-// --- TODO --- Align these fallbacks with the final backend match DTO field names.
 function getMatchMovie(match) {
   return {
-    title: match.title ?? match.movieTitle ?? match.movie?.title ?? match.matchedMovie?.title,
-    posterUrl: match.posterUrl ?? match.moviePosterUrl ?? match.movie?.posterUrl ?? match.matchedMovie?.posterUrl,
-    releaseYear: match.releaseYear ?? match.movieReleaseYear ?? match.movie?.releaseYear ?? match.matchedMovie?.releaseYear,
-    overview: match.overview ?? match.movieOverview ?? match.movie?.overview ?? match.matchedMovie?.overview,
+    title: match.movieTitle,
+    posterUrl: match.moviePosterUrl,
+    releaseYear: match.movieReleaseYear,
+    overview: match.movieOverview,
   };
 }
 
