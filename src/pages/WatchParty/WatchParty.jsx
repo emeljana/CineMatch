@@ -16,6 +16,8 @@ function WatchParty() {
   const { handleLeave, loading: leaveLoading } = useWatchParty();
   const toast = useToast();
 
+  const movieCardRef = useRef(null);
+
   const [party, setParty] = useState(null);
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -153,7 +155,7 @@ function WatchParty() {
 
       <main className="watchparty-main">
         {loading ? (
-          <MovieCard loading />
+          <div className="watchparty-loading" aria-busy="true" />
         ) : queueExhausted ? (
           <div className="watchparty-empty">
             <p>No more movies in the queue.</p>
@@ -177,7 +179,6 @@ function WatchParty() {
             <p className="swipe-progress" aria-live="polite">
               Movie {currentIndex + 1} of {queue.length}
             </p>
-            <MovieCard movie={currentMovie} />
             <div className="watchparty-actions">
               <Button
                 variant="dislike"
