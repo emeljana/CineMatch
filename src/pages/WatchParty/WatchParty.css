@@ -225,6 +225,14 @@
   grid-column: 1 / -1;
 }
 
+.match-watched-label {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-like);
+}
+
 @media (max-width: 640px) {
   .match-overlay {
     align-items: flex-start;

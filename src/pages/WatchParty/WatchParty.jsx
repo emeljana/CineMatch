@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
-import { getMatches } from '../../services/matchService';
+import { getMatches, markWatched } from '../../services/matchService';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import { useUser } from '../../context/userContext';
@@ -30,6 +30,7 @@ function WatchParty() {
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
+  const [markingWatched, setMarkingWatched] = useState(false);
   const [swiping, setSwiping] = useState(false);
   const [swipeError, setSwipeError] = useState(false);
   const [cardAnimating, setCardAnimating] = useState(false);
@@ -106,8 +107,18 @@ function WatchParty() {
     try {
       const { data } = await swipe(id, currentMovie.id, isLiked);
       if (data.isMatch) {
-        setMatch(data.matchedMovie);
         setMatchCount((currentCount) => currentCount + 1);
+        try {
+          const { data: matches } = await getMatches(id);
+          const matchRecord = matches.find((m) => m.movieId === data.matchedMovie.id);
+          setMatch({
+            ...data.matchedMovie,
+            matchId: matchRecord?.id ?? null,
+            isWatched: matchRecord?.isWatched ?? false,
+          });
+        } catch {
+          setMatch({ ...data.matchedMovie, matchId: null, isWatched: false });
+        }
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
@@ -145,6 +156,28 @@ function WatchParty() {
 
   function dismissMatch() {
     setMatch(null);
+  }
+
+  async function handleMarkWatched() {
+    if (!match?.matchId) return;
+    setMarkingWatched(true);
+    try {
+      await markWatched(match.matchId);
+      setMatch((prev) => ({ ...prev, isWatched: true }));
+    } catch (err) {
+      const errors = err.response?.data;
+      const code = Array.isArray(errors) ? errors[0]?.code : null;
+      if (code === 'Match.AlreadyWatched') {
+        setMatch((prev) => ({ ...prev, isWatched: true }));
+      }
+      toast.error(
+        Array.isArray(errors) && errors[0]?.description
+          ? errors[0].description
+          : 'Kunde inte markera filmen som sedd.'
+      );
+    } finally {
+      setMarkingWatched(false);
+    }
   }
 
   if (loadFailed) {
@@ -280,6 +313,20 @@ function WatchParty() {
                 <p className="match-overview">{match.overview}</p>
               )}
             </div>
+            {match.matchId && (
+              match.isWatched ? (
+                <p className="match-watched-label">✓ Markerad som sedd</p>
+              ) : (
+                <Button
+                  variant="secondary"
+                  onClick={handleMarkWatched}
+                  disabled={markingWatched}
+                  fullWidth
+                >
+                  {markingWatched ? 'Sparar...' : 'Markera som sedd'}
+                </Button>
+              )
+            )}
             <Button onClick={dismissMatch} fullWidth>
               Fortsätt svepa
             </Button>
