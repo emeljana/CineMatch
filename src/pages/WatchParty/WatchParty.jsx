@@ -6,6 +6,7 @@ import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
+import JoinCode from '../../components/party/JoinCode/JoinCode';
 import './WatchParty.css';
 
 const QUEUE_REFILL_THRESHOLD = 2;
@@ -142,7 +143,7 @@ function WatchParty() {
       <header className="watchparty-header">
         <div className="watchparty-meta">
           <span className="watchparty-code-label">Join code</span>
-          <span className="watchparty-code">{party?.joinCode}</span>
+          <JoinCode code={party?.joinCode} />
           <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
             {activeMembers.map((m) => (
               <span key={m.userId} className="member-avatar" title={m.username}>
