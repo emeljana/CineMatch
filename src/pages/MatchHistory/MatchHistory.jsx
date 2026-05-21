@@ -5,7 +5,7 @@ import { getMatches, markWatched } from '../../services/matchService';
 import { useToast } from '../../context/toastContext';
 import './MatchHistory.css';
 
-const MATCH_TIME_FORMATTER = new Intl.DateTimeFormat('sv-SE', {
+const MATCH_TIME_FORMATTER = new Intl.DateTimeFormat('en-GB', {
   dateStyle: 'medium',
   timeStyle: 'short',
 });

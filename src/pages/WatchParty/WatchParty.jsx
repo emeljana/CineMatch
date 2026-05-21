@@ -40,6 +40,10 @@ function WatchParty() {
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
   const [matchCount, setMatchCount] = useState(0);
+  const [curtainsOpen, setCurtainsOpen] = useState(() => {
+    const saved = sessionStorage.getItem(swipeSessionKey(id));
+    return saved ? (JSON.parse(saved).curtainsOpen ?? false) : false;
+  });
 
   useEffect(() => {
     async function init() {
@@ -111,9 +115,13 @@ function WatchParty() {
   }, [currentIndex, hasMoreMovies, id, loading, queue, queueRefilling]);
 
   useEffect(() => {
+    setCurtainsOpen(true);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     if (loading || queue.length === 0) return;
-    sessionStorage.setItem(swipeSessionKey(id), JSON.stringify({ queue, currentIndex }));
-  }, [id, loading, queue, currentIndex]);
+    sessionStorage.setItem(swipeSessionKey(id), JSON.stringify({ queue, currentIndex, curtainsOpen }));
+  }, [id, loading, queue, currentIndex, curtainsOpen]);
 
   useEffect(() => {
     if (loading || match) return;
@@ -217,7 +225,7 @@ function WatchParty() {
       toast.error(
         Array.isArray(errors) && errors[0]?.description
           ? errors[0].description
-          : 'Kunde inte markera filmen som sedd.'
+          : 'Could not mark the movie as watched.'
       );
     } finally {
       setMarkingWatched(false);
@@ -235,7 +243,7 @@ function WatchParty() {
   return (
     <div className="watchparty-page">
       <CurtainScene
-        isOpen
+        isOpen={curtainsOpen}
         variant="backdrop"
         className="watchparty-cinema-backdrop"
       />
@@ -319,21 +327,21 @@ function WatchParty() {
       <Modal
         isOpen={confirmLeaveOpen}
         onClose={() => setConfirmLeaveOpen(false)}
-        title="Lämna partyt?"
+        title="Leave party?"
       >
         <p className="modal-body">
-          Om du lämnar som host stängs partyt för alla deltagare.
+          If you leave as host, the party will end for all participants.
         </p>
         <div className="modal-actions">
           <Button variant="secondary" onClick={() => setConfirmLeaveOpen(false)}>
-            Avbryt
+            Cancel
           </Button>
           <Button
             variant="danger"
             onClick={() => { setConfirmLeaveOpen(false); sessionStorage.removeItem(swipeSessionKey(id)); handleLeave(id); }}
             disabled={leaveLoading}
           >
-            Lämna ändå
+            Leave anyway
           </Button>
         </div>
       </Modal>
@@ -353,7 +361,7 @@ function WatchParty() {
               )}
             </div>
             <div className="match-details">
-              <p className="match-label">Det är en match!</p>
+              <p className="match-label">It's a match!</p>
               <h2 className="match-title">{match.title}</h2>
               {match.releaseYear && (
                 <p className="match-year">{match.releaseYear}</p>
@@ -364,7 +372,7 @@ function WatchParty() {
             </div>
             {match.matchId && (
               match.isWatched ? (
-                <p className="match-watched-label">✓ Markerad som sedd</p>
+                <p className="match-watched-label">✓ Marked as watched</p>
               ) : (
                 <Button
                   variant="secondary"
@@ -372,12 +380,12 @@ function WatchParty() {
                   disabled={markingWatched}
                   fullWidth
                 >
-                  {markingWatched ? 'Sparar...' : 'Markera som sedd'}
+                  {markingWatched ? 'Saving...' : 'Mark as watched'}
                 </Button>
               )
             )}
             <Button onClick={dismissMatch} fullWidth>
-              Fortsätt svepa
+              Keep swiping
             </Button>
           </div>
         </div>

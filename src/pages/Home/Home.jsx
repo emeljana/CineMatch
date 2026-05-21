@@ -8,7 +8,6 @@ import CurtainScene from '../../components/cinema/CurtainScene';
 import './Home.css';
 
 const JOIN_CODE_LENGTH = 6;
-const CURTAIN_OPEN_MS = 1600;
 
 function Home() {
   const { user } = useUser();
@@ -17,13 +16,11 @@ function Home() {
   const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState('');
   const [joinCodeError, setJoinCodeError] = useState(null);
-  const [curtainsOpen, setCurtainsOpen] = useState(false);
 
-  async function handleCreateWithAnimation() {
+  async function handleCreateParty() {
     const data = await handleCreate({ navigateOnSuccess: false });
     if (!data) return;
-    setCurtainsOpen(true);
-    window.setTimeout(() => navigate(`/watchparty/${data.id}/lobby`), CURTAIN_OPEN_MS);
+    navigate(`/watchparty/${data.id}/lobby`);
   }
 
   async function handleJoinSubmit(e) {
@@ -35,8 +32,7 @@ function Home() {
 
     const data = await handleJoin(joinCode.toUpperCase(), { navigateOnSuccess: false });
     if (!data) return;
-    setCurtainsOpen(true);
-    window.setTimeout(() => navigate(`/watchparty/${data.id}/lobby`), CURTAIN_OPEN_MS);
+    navigate(`/watchparty/${data.id}/lobby`);
   }
 
   function handleJoinCodeChange(e) {
@@ -52,7 +48,6 @@ function Home() {
       <CurtainScene
         variant="backdrop"
         className="home-cinema-scene"
-        isOpen={curtainsOpen}
       />
       <header className="home-header">
         <span className="home-logo">CineMatch</span>
@@ -72,7 +67,7 @@ function Home() {
           <div className="home-card">
             <h2>Create a party</h2>
             <p>Start a new WatchParty and invite your friends with a join code.</p>
-            <Button onClick={handleCreateWithAnimation} disabled={loading || curtainsOpen} fullWidth>
+            <Button onClick={handleCreateParty} disabled={loading} fullWidth>
               {loading ? 'Creating...' : 'Create WatchParty'}
             </Button>
           </div>
@@ -89,7 +84,7 @@ function Home() {
                 onChange={handleJoinCodeChange}
                 placeholder="ABC123"
                 maxLength={JOIN_CODE_LENGTH}
-                disabled={loading || curtainsOpen}
+                disabled={loading}
                 className="home-join-input"
                 aria-label="Join code"
                 aria-invalid={Boolean(joinCodeError)}
@@ -102,7 +97,7 @@ function Home() {
               )}
               <Button
                 type="submit"
-                disabled={loading || curtainsOpen}
+                disabled={loading}
                 fullWidth
               >
                 {loading ? 'Joining...' : 'Join WatchParty'}
