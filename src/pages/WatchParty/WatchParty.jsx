@@ -208,7 +208,7 @@ function WatchParty() {
           </Link>
           <Button
             variant="secondary"
-            onClick={() => handleLeave(id)}
+            onClick={onLeaveClick}
             disabled={leaveLoading}
           >
             Leave party

@@ -14,6 +14,7 @@ const MovieCard = forwardRef(function MovieCard({ movie, onSwipe, onSwipeStart }
   const [isDragging, setIsDragging] = useState(false);
   const [isAnimatingOut, setIsAnimatingOut] = useState(false);
   const [activeDirection, setActiveDirection] = useState(null);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const updateCardPosition = useCallback((x, y) => {
     const card = cardRef.current;
@@ -37,7 +38,13 @@ const MovieCard = forwardRef(function MovieCard({ movie, onSwipe, onSwipeStart }
     setActiveDirection(null);
     setIsDragging(false);
     setIsAnimatingOut(false);
+    setIsInfoOpen(false);
   }, [updateCardPosition]);
+
+  function toggleInfo(e) {
+    e.stopPropagation();
+    setIsInfoOpen((current) => !current);
+  }
 
   const animateOut = useCallback((direction) => {
     const x = direction === 'like' ? EXIT_DISTANCE_PX : -EXIT_DISTANCE_PX;
@@ -118,22 +125,43 @@ const MovieCard = forwardRef(function MovieCard({ movie, onSwipe, onSwipeStart }
       >
         <span className="movie-card-feedback-icon">-</span>
       </div>
-      {movie.posterUrl ? (
-        <img
-          src={movie.posterUrl}
-          alt={movie.title}
-          className="movie-card-poster"
-        />
-      ) : (
-        <div className="movie-card-poster-placeholder" />
-      )}
+      <div className="movie-card-poster-frame">
+        {movie.posterUrl ? (
+          <img
+            src={movie.posterUrl}
+            alt={movie.title}
+            className="movie-card-poster"
+          />
+        ) : (
+          <div className="movie-card-poster-placeholder" />
+        )}
+        {movie.overview && (
+          <>
+            <button
+              type="button"
+              className="movie-card-info-toggle"
+              onClick={toggleInfo}
+              onPointerDown={(e) => e.stopPropagation()}
+              aria-label={isInfoOpen ? 'Hide movie description' : 'Show movie description'}
+              aria-expanded={isInfoOpen}
+            >
+              i
+            </button>
+            {isInfoOpen && (
+              <div
+                className="movie-card-description-panel"
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <p>{movie.overview}</p>
+              </div>
+            )}
+          </>
+        )}
+      </div>
       <div className="movie-card-info">
         <h2 className="movie-card-title">{movie.title}</h2>
         {movie.releaseYear && (
           <span className="movie-card-year">{movie.releaseYear}</span>
-        )}
-        {movie.overview && (
-          <p className="movie-card-overview">{movie.overview}</p>
         )}
       </div>
     </div>

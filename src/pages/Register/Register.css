@@ -54,3 +54,23 @@
   font-size: 14px;
   color: var(--color-text-muted);
 }
+
+@media (max-width: 480px) {
+  .register-page {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .register-card {
+    padding: 28px 20px;
+    box-shadow: none;
+  }
+
+  .register-title {
+    margin-bottom: 24px;
+  }
+
+  .register-form {
+    gap: 16px;
+  }
+}
