@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getWatchParty } from '../../services/watchPartyService';
+import { getWatchParty, startWatchParty } from '../../services/watchPartyService';
 import { useUser } from '../../context/userContext';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
@@ -26,6 +26,7 @@ function Lobby() {
   const [refreshing, setRefreshing] = useState(false);
   const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
   const [curtainsOpen, setCurtainsOpen] = useState(false);
+  const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -38,6 +39,10 @@ function Lobby() {
         if (!isMounted) return;
         setParty(data);
         setLoadFailed(false);
+
+        if (data.isStarted) {
+          navigate(`/watchparty/${id}`);
+        }
       } catch {
         if (!isMounted) return;
         setLoadFailed(true);
@@ -62,11 +67,16 @@ function Lobby() {
     };
   }, [id, toast]);
 
-  function handleStartSession() {
-    setCurtainsOpen(true);
-    window.setTimeout(() => {
+  async function handleStartSession() {
+    setStarting(true);
+    try {
+      await startWatchParty(id);
       navigate(`/watchparty/${id}`);
-    }, CURTAIN_OPEN_MS);
+    } catch {
+      toast.error('Could not start the session. Try again.');
+    } finally {
+      setStarting(false);
+    }
   }
 
   function onLeaveClick() {
