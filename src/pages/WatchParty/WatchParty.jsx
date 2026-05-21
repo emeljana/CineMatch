@@ -4,9 +4,11 @@ import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
+import { useUser } from '../../context/userContext';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
+import Modal from '../../components/ui/Modal/Modal';
 import './WatchParty.css';
 
 const QUEUE_REFILL_THRESHOLD = 2;
@@ -16,6 +18,7 @@ function WatchParty() {
   const { id } = useParams();
   const { handleLeave, loading: leaveLoading } = useWatchParty();
   const toast = useToast();
+  const { user } = useUser();
 
   const movieCardRef = useRef(null);
 
@@ -25,6 +28,7 @@ function WatchParty() {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
   const [swiping, setSwiping] = useState(false);
   const [swipeError, setSwipeError] = useState(false);
   const [cardAnimating, setCardAnimating] = useState(false);
@@ -126,6 +130,14 @@ function WatchParty() {
     setCurrentIndex((prev) => prev + 1);
   }
 
+  function onLeaveClick() {
+    if (party?.hostUsername === user?.username) {
+      setConfirmLeaveOpen(true);
+    } else {
+      handleLeave(id);
+    }
+  }
+
   function dismissMatch() {
     setMatch(null);
   }
@@ -154,7 +166,7 @@ function WatchParty() {
         </div>
         <Button
           variant="secondary"
-          onClick={() => handleLeave(id)}
+          onClick={onLeaveClick}
           disabled={leaveLoading}
         >
           Leave party
@@ -211,6 +223,28 @@ function WatchParty() {
           </>
         )}
       </main>
+
+      <Modal
+        isOpen={confirmLeaveOpen}
+        onClose={() => setConfirmLeaveOpen(false)}
+        title="Lämna partyt?"
+      >
+        <p className="modal-body">
+          Om du lämnar som host stängs partyt för alla deltagare.
+        </p>
+        <div className="modal-actions">
+          <Button variant="secondary" onClick={() => setConfirmLeaveOpen(false)}>
+            Avbryt
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => { setConfirmLeaveOpen(false); handleLeave(id); }}
+            disabled={leaveLoading}
+          >
+            Lämna ändå
+          </Button>
+        </div>
+      </Modal>
 
       {match && (
         <div className="match-overlay" onClick={dismissMatch}>
