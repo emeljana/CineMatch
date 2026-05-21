@@ -6,6 +6,7 @@ import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
+import Modal from '../../components/ui/Modal/Modal';
 import './Lobby.css';
 
 const POLL_INTERVAL_MS = 5000;
@@ -21,6 +22,7 @@ function Lobby() {
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [confirmLeaveOpen, setConfirmLeaveOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -61,6 +63,14 @@ function Lobby() {
     navigate(`/watchparty/${id}`);
   }
 
+  function onLeaveClick() {
+    if (party?.hostUsername === user?.username) {
+      setConfirmLeaveOpen(true);
+    } else {
+      handleLeave(id);
+    }
+  }
+
   if (loading) return <div className="lobby-status">Loading lobby...</div>;
   if (loadFailed) {
     return <div className="lobby-status lobby-status--error">Lobby unavailable.</div>;
@@ -78,7 +88,7 @@ function Lobby() {
         </div>
         <Button
           variant="secondary"
-          onClick={() => handleLeave(id)}
+          onClick={onLeaveClick}
           disabled={leaveLoading}
         >
           Leave party
@@ -125,6 +135,27 @@ function Lobby() {
           )}
         </section>
       </main>
+      <Modal
+        isOpen={confirmLeaveOpen}
+        onClose={() => setConfirmLeaveOpen(false)}
+        title="Lämna partyt?"
+      >
+        <p className="modal-body">
+          Om du lämnar som host stängs partyt för alla deltagare.
+        </p>
+        <div className="modal-actions">
+          <Button variant="secondary" onClick={() => setConfirmLeaveOpen(false)}>
+            Avbryt
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => { setConfirmLeaveOpen(false); handleLeave(id); }}
+            disabled={leaveLoading}
+          >
+            Lämna ändå
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
