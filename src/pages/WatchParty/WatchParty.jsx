@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { getWatchParty } from '../../services/watchPartyService';
 import { getQueue, swipe } from '../../services/swipeService';
+import { getMatches } from '../../services/matchService';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import { useUser } from '../../context/userContext';
@@ -34,17 +35,20 @@ function WatchParty() {
   const [cardAnimating, setCardAnimating] = useState(false);
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
+  const [matchCount, setMatchCount] = useState(0);
 
   useEffect(() => {
     async function init() {
       try {
-        const [partyRes, queueRes] = await Promise.all([
+        const [partyRes, queueRes, matchesRes] = await Promise.all([
           getWatchParty(id),
           getQueue(id, QUEUE_BATCH_SIZE),
+          getMatches(id),
         ]);
         setParty(partyRes.data);
         setQueue(queueRes.data);
         setHasMoreMovies(queueRes.data.length > 0);
+        setMatchCount(matchesRes.data.length);
       } catch {
         setLoadFailed(true);
         toast.error('Could not load the party. It may no longer exist.');
@@ -103,6 +107,7 @@ function WatchParty() {
       const { data } = await swipe(id, currentMovie.id, isLiked);
       if (data.isMatch) {
         setMatch(data.matchedMovie);
+        setMatchCount((currentCount) => currentCount + 1);
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
@@ -164,13 +169,18 @@ function WatchParty() {
             ))}
           </div>
         </div>
-        <Button
-          variant="secondary"
-          onClick={onLeaveClick}
-          disabled={leaveLoading}
-        >
-          Leave party
-        </Button>
+        <div className="watchparty-header-actions">
+          <Link className="watchparty-match-badge" to={`/watchparty/${id}/matches`}>
+            {matchCount} match{matchCount === 1 ? '' : 'es'}
+          </Link>
+          <Button
+            variant="secondary"
+            onClick={() => handleLeave(id)}
+            disabled={leaveLoading}
+          >
+            Leave party
+          </Button>
+        </div>
       </header>
 
       <main className="watchparty-main">
