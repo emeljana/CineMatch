@@ -90,6 +90,21 @@
   gap: 24px;
 }
 
+.skip-link {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.skip-link:hover {
+  color: var(--color-text);
+}
+
 .watchparty-empty {
   text-align: center;
   color: var(--color-text-muted);
