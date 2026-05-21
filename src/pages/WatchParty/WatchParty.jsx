@@ -15,6 +15,8 @@ import './WatchParty.css';
 
 const QUEUE_REFILL_THRESHOLD = 2;
 const QUEUE_BATCH_SIZE = 10;
+const MATCH_POLL_INTERVAL_MS = 1000;
+const swipeSessionKey = (id) => `cinematch_swipe_${id}`;
 
 function WatchParty() {
   const { id } = useParams();
@@ -42,15 +44,24 @@ function WatchParty() {
   useEffect(() => {
     async function init() {
       try {
-        const [partyRes, queueRes, matchesRes] = await Promise.all([
+        const saved = sessionStorage.getItem(swipeSessionKey(id));
+        const savedState = saved ? JSON.parse(saved) : null;
+
+        const [partyRes, matchesRes] = await Promise.all([
           getWatchParty(id),
-          getQueue(id, QUEUE_BATCH_SIZE),
           getMatches(id),
         ]);
         setParty(partyRes.data);
-        setQueue(queueRes.data);
-        setHasMoreMovies(queueRes.data.length > 0);
         setMatchCount(matchesRes.data.length);
+
+        if (savedState) {
+          setQueue(savedState.queue);
+          setCurrentIndex(savedState.currentIndex);
+        } else {
+          const queueRes = await getQueue(id, QUEUE_BATCH_SIZE);
+          setQueue(queueRes.data);
+          setHasMoreMovies(queueRes.data.length > 0);
+        }
       } catch {
         setLoadFailed(true);
         toast.error('Could not load the party. It may no longer exist.');
@@ -98,6 +109,37 @@ function WatchParty() {
 
     refillQueue();
   }, [currentIndex, hasMoreMovies, id, loading, queue, queueRefilling]);
+
+  useEffect(() => {
+    if (loading || queue.length === 0) return;
+    sessionStorage.setItem(swipeSessionKey(id), JSON.stringify({ queue, currentIndex }));
+  }, [id, loading, queue, currentIndex]);
+
+  useEffect(() => {
+    if (loading || match) return;
+
+    const intervalId = window.setInterval(async () => {
+      try {
+        const { data: matches } = await getMatches(id);
+        if (matches.length <= matchCount) return;
+
+        setMatchCount(matches.length);
+        const latestMatch = matches[0];
+        const movieInQueue = queue.find((m) => m.id === latestMatch.movieId);
+        if (!movieInQueue) return;
+
+        setMatch({
+          ...movieInQueue,
+          matchId: latestMatch.id,
+          isWatched: latestMatch.isWatched,
+        });
+      } catch {
+        // ignore transient poll errors
+      }
+    }, MATCH_POLL_INTERVAL_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, [id, loading, match, matchCount, queue]);
 
   async function handleSwipe(isLiked) {
     const currentMovie = queue[currentIndex];
@@ -151,6 +193,7 @@ function WatchParty() {
     if (party?.hostUsername === user?.username) {
       setConfirmLeaveOpen(true);
     } else {
+      sessionStorage.removeItem(swipeSessionKey(id));
       handleLeave(id);
     }
   }
@@ -287,7 +330,7 @@ function WatchParty() {
           </Button>
           <Button
             variant="danger"
-            onClick={() => { setConfirmLeaveOpen(false); handleLeave(id); }}
+            onClick={() => { setConfirmLeaveOpen(false); sessionStorage.removeItem(swipeSessionKey(id)); handleLeave(id); }}
             disabled={leaveLoading}
           >
             Lämna ändå
