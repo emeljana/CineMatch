@@ -69,6 +69,32 @@
   user-select: none;
 }
 
+.watchparty-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.watchparty-match-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: rgba(170, 59, 255, 0.12);
+  color: var(--color-accent);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.watchparty-match-badge:hover {
+  background: rgba(170, 59, 255, 0.2);
+  text-decoration: none;
+}
+
 .watchparty-main {
   min-height: 0;
   display: flex;
@@ -210,5 +236,24 @@
 
   .match-overview {
     text-align: left;
+  }
+
+  .watchparty-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .watchparty-meta {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .watchparty-header-actions {
+    width: 100%;
+  }
+
+  .watchparty-header-actions .btn,
+  .watchparty-match-badge {
+    flex: 1;
   }
 }
