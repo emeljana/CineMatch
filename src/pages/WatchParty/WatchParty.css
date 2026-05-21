@@ -163,10 +163,12 @@
   border-radius: var(--radius-lg);
   padding: 24px;
   max-width: 680px;
+  max-height: calc(100dvh - 40px);
   width: 100%;
   display: grid;
   grid-template-columns: minmax(180px, 240px) 1fr;
   gap: 24px;
+  overflow-y: auto;
   box-shadow: 0 0 40px rgba(170, 59, 255, 0.3);
 }
 
@@ -266,6 +268,8 @@
   .watchparty-header {
     align-items: flex-start;
     flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
   }
 
   .watchparty-meta {
@@ -280,5 +284,56 @@
   .watchparty-header-actions .btn,
   .watchparty-match-badge {
     flex: 1;
+  }
+
+  .watchparty-main {
+    justify-content: flex-start;
+    padding: 14px 16px 112px;
+  }
+
+  .watchparty-main .movie-card {
+    max-width: min(320px, calc((100dvh - 320px) * 0.66), 100%);
+  }
+
+  .watchparty-main .movie-card-poster {
+    height: auto;
+    max-height: none;
+  }
+
+  .watchparty-main .movie-card-info {
+    padding: 16px;
+  }
+
+  .watchparty-main .movie-card-title {
+    font-size: 18px;
+  }
+
+  .watchparty-actions {
+    position: fixed;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    left: 16px;
+    z-index: 20;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: rgba(26, 27, 37, 0.96);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .watchparty-actions .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .skip-link {
+    position: fixed;
+    right: 16px;
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    left: 16px;
+    z-index: 21;
+    padding: 8px;
+    background: rgba(13, 14, 20, 0.9);
   }
 }

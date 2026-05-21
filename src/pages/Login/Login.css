@@ -64,3 +64,32 @@
   height: 14px;
   background: var(--color-border);
 }
+
+@media (max-width: 480px) {
+  .login-page {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 28px 20px;
+    box-shadow: none;
+  }
+
+  .login-title {
+    margin-bottom: 24px;
+  }
+
+  .login-form {
+    gap: 16px;
+  }
+
+  .login-footer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .login-footer-divider {
+    display: none;
+  }
+}
