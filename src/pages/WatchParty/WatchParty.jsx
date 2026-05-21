@@ -25,6 +25,7 @@ function WatchParty() {
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [swiping, setSwiping] = useState(false);
+  const [swipeError, setSwipeError] = useState(false);
   const [cardAnimating, setCardAnimating] = useState(false);
   const [queueRefilling, setQueueRefilling] = useState(false);
   const [hasMoreMovies, setHasMoreMovies] = useState(true);
@@ -92,6 +93,7 @@ function WatchParty() {
     if (!currentMovie || swiping) return;
 
     setSwiping(true);
+    setSwipeError(false);
     try {
       const { data } = await swipe(id, currentMovie.id, isLiked);
       if (data.isMatch) {
@@ -99,8 +101,8 @@ function WatchParty() {
       }
       setCurrentIndex((prev) => prev + 1);
     } catch {
-      toast.error('Could not save your swipe.');
-      setCurrentIndex((prev) => prev + 1);
+      toast.error('Could not save your swipe. Try again or skip the movie.');
+      setSwipeError(true);
     } finally {
       setSwiping(false);
       setCardAnimating(false);
@@ -116,6 +118,11 @@ function WatchParty() {
     if (!currentMovie || swiping || cardAnimating) return;
 
     movieCardRef.current?.swipe(direction);
+  }
+
+  function skipCurrentMovie() {
+    setSwipeError(false);
+    setCurrentIndex((prev) => prev + 1);
   }
 
   function dismissMatch() {
@@ -195,6 +202,11 @@ function WatchParty() {
                 Like
               </Button>
             </div>
+            {swipeError && (
+              <button className="skip-link" onClick={skipCurrentMovie}>
+                Skip this movie
+              </button>
+            )}
           </>
         )}
       </main>
