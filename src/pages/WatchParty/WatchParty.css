@@ -85,6 +85,10 @@
   letter-spacing: 0.04em;
 }
 
+.watchparty-main .movie-card-poster {
+  max-height: calc(100dvh - 325px);
+}
+
 .watchparty-actions {
   display: flex;
   gap: 24px;
