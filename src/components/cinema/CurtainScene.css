@@ -116,15 +116,21 @@
   left: 0;
   z-index: 4;
   pointer-events: none;
+  display: flex;
+  justify-content: center;
 }
 
 .cinema-sofa-img {
   display: block;
-  width: 100%;
+  width: min(78vw, 760px);
   height: auto;
 }
 
 @media (max-width: 640px) {
+  .cinema-sofa-img {
+    width: 96vw;
+  }
+
   .cinema-wall {
     width: min(94vw, 520px);
     transform: translateY(-18vh);
