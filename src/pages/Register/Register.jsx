@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/Button/Button';
 import Input from '../../components/Input/Input';
-import './Register.css';
 
 function validateRegister(username, email, password) {
   const errors = {};
@@ -38,17 +37,16 @@ function Register() {
     const nextErrors = validateRegister(username, email, password);
     setFieldErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-
     await handleRegister(username, email, password);
   }
 
   return (
-    <div className="register-page">
-      <div className="register-card">
-        <h1 className="register-logo">CineMatch</h1>
-        <h2 className="register-title">Create account</h2>
+    <div className="flex items-center justify-center min-h-screen p-6 bg-bg max-[480px]:items-start max-[480px]:p-4">
+      <div className="bg-surface border border-border rounded-lg p-10 w-full max-w-[420px] shadow-lg max-[480px]:p-7 max-[480px]:px-5 max-[480px]:shadow-none">
+        <h1 className="text-[28px] font-bold text-accent text-center mb-2">CineMatch</h1>
+        <h2 className="text-lg font-medium text-muted text-center mb-8">Create account</h2>
 
-        <form onSubmit={handleSubmit} className="register-form" noValidate>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 max-[480px]:gap-4" noValidate>
           <Input
             id="username"
             type="text"
@@ -56,7 +54,7 @@ function Register() {
             value={username}
             onChange={(e) => {
               setUsername(e.target.value);
-              setFieldErrors((currentErrors) => ({ ...currentErrors, username: null }));
+              setFieldErrors((current) => ({ ...current, username: null }));
               setError(null);
             }}
             error={fieldErrors.username}
@@ -74,7 +72,7 @@ function Register() {
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              setFieldErrors((currentErrors) => ({ ...currentErrors, email: null }));
+              setFieldErrors((current) => ({ ...current, email: null }));
               setError(null);
             }}
             error={fieldErrors.email}
@@ -90,7 +88,7 @@ function Register() {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              setFieldErrors((currentErrors) => ({ ...currentErrors, password: null }));
+              setFieldErrors((current) => ({ ...current, password: null }));
               setError(null);
             }}
             error={fieldErrors.password}
@@ -101,17 +99,19 @@ function Register() {
             autoComplete="new-password"
           />
 
-          {error && <p className="form-error">{error}</p>}
+          {error && (
+            <p className="text-sm text-dislike bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.3)] rounded-sm px-3.5 py-2.5">
+              {error}
+            </p>
+          )}
 
           <Button type="submit" disabled={loading} fullWidth>
             {loading ? 'Creating account...' : 'Create account'}
           </Button>
         </form>
 
-        <div className="register-footer">
-          <span>
-            Already have an account? <Link to="/login">Log in</Link>
-          </span>
+        <div className="text-center mt-6 text-sm text-muted">
+          Already have an account? <Link to="/login">Log in</Link>
         </div>
       </div>
     </div>

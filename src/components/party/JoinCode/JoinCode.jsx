@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import './JoinCode.css';
 
 const COPIED_RESET_MS = 2000;
 
-function JoinCode({ code }) {
+function JoinCode({ code, codeClassName = '' }) {
   const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
@@ -19,12 +18,15 @@ function JoinCode({ code }) {
 
   return (
     <button
-      className={`join-code${copied ? ' join-code--copied' : ''}`}
+      className="inline-flex flex-col items-center gap-1 bg-transparent border-none cursor-pointer py-1.5 px-2.5 rounded-sm text-accent transition-[background] duration-150 hover:bg-[rgba(139,26,26,0.12)]"
       onClick={handleCopy}
       aria-label={`Join code ${code}. ${copied ? 'Kopierad!' : 'Klicka för att kopiera'}`}
     >
-      <span className="join-code-value">{code}</span>
-      <span className="join-code-hint" aria-live="polite">
+      <span className={`font-bold${codeClassName ? ` ${codeClassName}` : ''}`}>{code}</span>
+      <span
+        className={`text-[11px] font-semibold tracking-[0.06em] uppercase transition-[color] duration-150 ${copied ? 'text-like' : 'text-muted'}`}
+        aria-live="polite"
+      >
         {copied ? 'Kopierad!' : 'Kopiera'}
       </span>
     </button>

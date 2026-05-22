@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../context/userContext';
 import Button from '../../Button/Button';
-import './AppHeader.css';
 
-function AppHeader({ action }) {
+function AppHeader({ action, className = '' }) {
   const { user, logout } = useUser();
   const navigate = useNavigate();
 
@@ -13,10 +12,10 @@ function AppHeader({ action }) {
   }
 
   return (
-    <header className="app-header">
-      <span className="app-header-logo">CineMatch</span>
-      <div className="app-header-right">
-        <span className="app-header-username">{user?.username}</span>
+    <header className={`flex items-center justify-between px-8 py-4 border-b border-border bg-surface${className ? ` ${className}` : ''}`}>
+      <span className="text-xl font-bold text-accent">CineMatch</span>
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-muted">{user?.username}</span>
         {action}
         <Button variant="secondary" onClick={handleLogout}>Log out</Button>
       </div>
