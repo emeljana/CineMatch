@@ -273,7 +273,7 @@ function WatchParty() {
         </div>
       </header>
 
-      <main className="watchparty-main relative z-[2] min-h-0 flex-1 flex flex-col items-center justify-center px-6 py-4 gap-3 min-[641px]:absolute min-[641px]:top-[clamp(16px,2vh,42px)] min-[641px]:left-1/2 min-[641px]:-translate-x-1/2 min-[641px]:w-[min(300px,24vw)] min-[641px]:p-0 max-[640px]:justify-start max-[640px]:px-4 max-[640px]:pt-3.5 max-[640px]:pb-28">
+      <main className="watchparty-main relative z-[2] min-h-0 flex-1 flex flex-col items-center justify-center px-6 py-4 gap-3 min-[641px]:absolute min-[641px]:top-[clamp(160px,2vh,42px)] min-[641px]:left-1/2 min-[641px]:-translate-x-1/2 min-[641px]:w-[min(300px,24vw)] min-[641px]:p-0 max-[640px]:justify-start max-[640px]:px-4 max-[640px]:pt-3.5 max-[640px]:pb-28">
         {loading ? (
           <div aria-busy="true" />
         ) : queueExhausted ? (
