@@ -6,6 +6,7 @@ import { getMatches, markWatched } from '../../services/matchService';
 import { useWatchParty } from '../../hooks/useWatchParty';
 import { useToast } from '../../context/toastContext';
 import { useUser } from '../../context/userContext';
+import { parseError, getErrorCode } from '../../helpers/errorHelpers';
 import MovieCard from '../../components/MovieCard/MovieCard';
 import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
@@ -210,16 +211,11 @@ function WatchParty() {
       await markWatched(match.matchId);
       setMatch((prev) => ({ ...prev, isWatched: true }));
     } catch (err) {
-      const errors = err.response?.data;
-      const code = Array.isArray(errors) ? errors[0]?.code : null;
+      const code = getErrorCode(err);
       if (code === 'Match.AlreadyWatched') {
         setMatch((prev) => ({ ...prev, isWatched: true }));
       }
-      toast.error(
-        Array.isArray(errors) && errors[0]?.description
-          ? errors[0].description
-          : 'Could not mark the movie as watched.'
-      );
+      toast.error(parseError(err, 'Could not mark the movie as watched.'));
     } finally {
       setMarkingWatched(false);
     }

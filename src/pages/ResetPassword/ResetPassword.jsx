@@ -2,14 +2,9 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPassword } from '../../services/authService';
 import { useToast } from '../../context/toastContext';
+import { parseError } from '../../helpers/errorHelpers';
 import Button from '../../components/Button/Button';
 import './ResetPassword.css';
-
-function parseError(err) {
-  const errors = err.response?.data;
-  if (Array.isArray(errors) && errors.length > 0) return errors[0].description;
-  return 'Something went wrong. Please try again.';
-}
 
 function validatePassword(password) {
   if (password.length < 8) return 'Lösenordet måste vara minst 8 tecken.';
