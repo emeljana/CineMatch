@@ -7,7 +7,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-[#0d0d0f]">
       <header className="flex items-center justify-between px-8 py-[18px] border-b border-border bg-[rgba(13,14,20,0.94)] max-[820px]:px-5 max-[820px]:py-4 max-[480px]:flex-col max-[480px]:items-start max-[480px]:gap-3.5">
-        <span className="text-xl font-bold text-[#f5eded]">CineMatch</span>
+        <span className="text-xl font-bold text-accent">CineMatch</span>
         <nav className="flex items-center gap-3.5" aria-label="Authentication">
         <Link
           to="/login"
@@ -39,18 +39,6 @@ function Landing() {
             className="absolute right-6 bottom-6 left-6 z-[8] flex flex-wrap justify-center gap-3.5 max-[480px]:flex-col max-[480px]:right-4 max-[480px]:bottom-4 max-[480px]:left-4"
             aria-label="Get started"
           >
-            {/* <Link
-              to="/register"
-              className={`${ACTION_BASE} bg-[#8b1a1a] !text-white hover:opacity-[0.88] max-[480px]:w-full`}
-            >
-              Create account
-            </Link>
-            <Link
-              to="/login"
-              className={`${ACTION_BASE} border border-border !text-foreground hover:border-muted max-[480px]:w-full`}
-            >
-              Log in
-            </Link> */}
           </div>
         </section>
 
