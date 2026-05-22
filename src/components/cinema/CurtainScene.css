@@ -122,7 +122,7 @@
   display: block;
   width: min(100vw, 980px);
   height: auto;
-  filter: brightness(1.8);
+  filter: brightness(3);
 }
 
 @media (max-width: 640px) {
