@@ -12,7 +12,7 @@ function NotFound() {
         <p className="text-[15px] text-muted">Sidan du letar efter finns inte eller har flyttats.</p>
         <Link
           to={user ? '/home' : '/login'}
-          className="mt-2 inline-flex px-6 py-2.5 bg-accent text-white rounded-md text-[15px] font-medium no-underline hover:opacity-[0.88] hover:no-underline transition-opacity duration-150"
+          className="mt-2 inline-flex px-6 py-2.5 bg-accent !text-white rounded-md text-[15px] font-medium no-underline hover:opacity-[0.88] hover:no-underline transition-opacity duration-150"
         >
           {user ? 'Tillbaka till startsidan' : 'Gå till inloggning'}
         </Link>
