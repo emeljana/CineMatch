@@ -1,7 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useUser } from '../../context/userContext';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import './AdminRoute.css';
 
 const ROLE_ADMIN = 1;
 
@@ -10,7 +9,7 @@ function AdminRoute() {
 
   if (loading) {
     return (
-      <div className="loading-screen">
+      <div className="flex items-center justify-center min-h-screen text-muted text-[15px]">
         <LoadingSpinner size="lg" />
       </div>
     );

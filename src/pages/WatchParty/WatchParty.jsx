@@ -222,7 +222,7 @@ function WatchParty() {
   }
 
   if (loadFailed) {
-    return <div className="watchparty-status watchparty-status--error">WatchParty unavailable.</div>;
+    return <div className="flex items-center justify-center min-h-screen text-[15px] text-dislike">WatchParty unavailable.</div>;
   }
 
   const currentMovie = queue[currentIndex];
@@ -230,50 +230,59 @@ function WatchParty() {
   const activeMembers = party?.members?.filter((m) => m.isActive) ?? [];
 
   return (
-    <div className="watchparty-page">
+    <div className="relative flex flex-col h-dvh overflow-hidden bg-bg">
       <CurtainScene
         isOpen={curtainsOpen}
         variant="backdrop"
-        className="watchparty-cinema-backdrop"
+        className="z-0"
       />
-      <header className="watchparty-header">
-        <div className="watchparty-meta">
-          <span className="watchparty-code-label">Join code</span>
-          <JoinCode code={party?.joinCode} />
-          <div className="member-avatars" aria-label={`${activeMembers.length} active members`}>
+      <header className="relative z-[2] flex items-center justify-between px-6 py-4 border-b border-border bg-[rgba(26,27,37,0.9)] backdrop-blur-[10px] max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-3 max-[640px]:px-4 max-[640px]:py-3.5">
+        <div className="flex items-center gap-4 max-[640px]:flex-wrap max-[640px]:gap-x-3 max-[640px]:gap-y-2">
+          <span className="text-[12px] text-muted uppercase tracking-[0.08em]">Join code</span>
+          <JoinCode
+            code={party?.joinCode}
+            codeClassName="text-[18px] tracking-[3px]"
+          />
+          <div className="flex gap-1.5" aria-label={`${activeMembers.length} active members`}>
             {activeMembers.map((m) => (
-              <span key={m.userId} className="member-avatar" title={m.username}>
+              <span
+                key={m.userId}
+                className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white text-[11px] font-bold tracking-[0.05em] cursor-default select-none"
+                title={m.username}
+              >
                 {m.username.slice(0, 2).toUpperCase()}
               </span>
             ))}
           </div>
         </div>
-        <div className="watchparty-header-actions">
-          <Link className="watchparty-match-badge" to={`/watchparty/${id}/matches`}>
+        <div className="flex items-center gap-3 max-[640px]:w-full">
+          <Link
+            className="inline-flex items-center justify-center px-[18px] py-2.5 border border-accent rounded-md bg-[rgba(170,59,255,0.12)] text-accent text-[15px] font-bold leading-none no-underline whitespace-nowrap hover:bg-[rgba(170,59,255,0.2)] transition-[background] duration-150 max-[640px]:flex-1"
+            to={`/watchparty/${id}/matches`}
+          >
             {matchCount} match{matchCount === 1 ? '' : 'es'}
           </Link>
           <Button
             variant="secondary"
             onClick={onLeaveClick}
             disabled={leaveLoading}
+            className="max-[640px]:flex-1"
           >
             Leave party
           </Button>
         </div>
       </header>
 
-      <main className="watchparty-main">
+      <main className="watchparty-main relative z-[2] min-h-0 flex-1 flex flex-col items-center justify-center px-6 py-4 gap-3 min-[641px]:absolute min-[641px]:top-[clamp(16px,2vh,42px)] min-[641px]:left-1/2 min-[641px]:-translate-x-1/2 min-[641px]:w-[min(300px,24vw)] min-[641px]:p-0 max-[640px]:justify-start max-[640px]:px-4 max-[640px]:pt-3.5 max-[640px]:pb-28">
         {loading ? (
-          <div className="watchparty-loading" aria-busy="true" />
+          <div aria-busy="true" />
         ) : queueExhausted ? (
-          <div className="watchparty-empty">
+          <div className="text-center text-muted flex flex-col gap-2">
             <p>No more movies in the queue.</p>
-            <p className="watchparty-empty-sub">
-              Wait for new movies or check your matches.
-            </p>
+            <p className="text-[14px]">Wait for new movies or check your matches.</p>
           </div>
         ) : !currentMovie ? (
-          <div className="watchparty-empty">
+          <div className="text-center text-muted flex flex-col gap-2">
             <p>Loading more movies...</p>
           </div>
         ) : (
@@ -285,14 +294,18 @@ function WatchParty() {
               onSwipe={handleSwipe}
               onSwipeStart={handleSwipeStart}
             />
-            <p className="swipe-progress" aria-live="polite">
+            <p
+              className="text-[13px] text-muted tracking-[0.04em] min-[641px]:[text-shadow:0_2px_10px_rgba(0,0,0,0.9)]"
+              aria-live="polite"
+            >
               Movie {currentIndex + 1} of {queue.length}
             </p>
-            <div className="watchparty-actions">
+            <div className="watchparty-actions flex gap-6 max-[640px]:fixed max-[640px]:right-4 max-[640px]:bottom-[calc(16px+env(safe-area-inset-bottom))] max-[640px]:left-4 max-[640px]:z-[20] max-[640px]:gap-3 max-[640px]:p-3 max-[640px]:border max-[640px]:border-border max-[640px]:rounded-[16px] max-[640px]:bg-[rgba(26,27,37,0.96)] max-[640px]:shadow-[0_10px_30px_rgba(0,0,0,0.6)]">
               <Button
                 variant="dislike"
                 onClick={() => triggerSwipeAnimation('dislike')}
                 disabled={swiping || cardAnimating}
+                className="max-[640px]:flex-1 max-[640px]:min-w-0"
               >
                 Pass
               </Button>
@@ -300,12 +313,16 @@ function WatchParty() {
                 variant="like"
                 onClick={() => triggerSwipeAnimation('like')}
                 disabled={swiping || cardAnimating}
+                className="max-[640px]:flex-1 max-[640px]:min-w-0"
               >
                 Like
               </Button>
             </div>
             {swipeError && (
-              <button className="skip-link" onClick={skipCurrentMovie}>
+              <button
+                className="bg-transparent border-none text-muted text-[13px] cursor-pointer px-2 py-1 underline underline-offset-[3px] hover:text-foreground max-[640px]:fixed max-[640px]:right-4 max-[640px]:bottom-[calc(88px+env(safe-area-inset-bottom))] max-[640px]:left-4 max-[640px]:z-[21] max-[640px]:py-2 max-[640px]:bg-[rgba(13,14,20,0.9)]"
+                onClick={skipCurrentMovie}
+              >
                 Skip this movie
               </button>
             )}
@@ -336,44 +353,51 @@ function WatchParty() {
       </Modal>
 
       {match && (
-        <div className="match-overlay" onClick={dismissMatch}>
-          <div className="match-card" onClick={(e) => e.stopPropagation()}>
-            <div className="match-poster-frame">
+        <div
+          className="fixed inset-0 bg-[rgba(0,0,0,0.8)] flex items-center justify-center p-5 z-[100] overflow-y-auto max-[640px]:items-start"
+          onClick={dismissMatch}
+        >
+          <div
+            className="bg-surface border border-accent rounded-[16px] p-6 max-w-[680px] max-h-[calc(100dvh-40px)] w-full grid grid-cols-[minmax(180px,240px)_1fr] gap-6 overflow-y-auto shadow-[0_0_40px_rgba(170,59,255,0.3)] max-[640px]:grid-cols-1 max-[640px]:max-w-[380px] max-[640px]:p-5 max-[640px]:gap-[18px]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="min-w-0 max-[640px]:max-w-[220px] max-[640px]:w-full max-[640px]:mx-auto">
               {match.posterUrl ? (
                 <img
                   src={match.posterUrl}
                   alt={match.title}
-                  className="match-poster"
+                  className="w-full rounded-md aspect-[2/3] object-cover block"
                 />
               ) : (
-                <div className="match-poster-placeholder" />
+                <div className="w-full rounded-md aspect-[2/3] bg-surface-2" />
               )}
             </div>
-            <div className="match-details">
-              <p className="match-label">It's a match!</p>
-              <h2 className="match-title">{match.title}</h2>
+            <div className="min-w-0 max-[640px]:text-center">
+              <p className="text-[13px] font-semibold uppercase tracking-[0.1em] text-accent mb-2">It's a match!</p>
+              <h2 className="text-[28px] font-bold leading-[1.15] max-[640px]:text-[23px]">{match.title}</h2>
               {match.releaseYear && (
-                <p className="match-year">{match.releaseYear}</p>
+                <p className="mt-2 text-[14px] text-muted">{match.releaseYear}</p>
               )}
               {match.overview && (
-                <p className="match-overview">{match.overview}</p>
+                <p className="mt-4 text-[15px] leading-[1.6] text-muted max-[640px]:text-left">{match.overview}</p>
               )}
             </div>
             {match.matchId && (
               match.isWatched ? (
-                <p className="match-watched-label">✓ Marked as watched</p>
+                <p className="col-span-full text-center text-[14px] font-semibold text-like">✓ Marked as watched</p>
               ) : (
                 <Button
                   variant="secondary"
                   onClick={handleMarkWatched}
                   disabled={markingWatched}
                   fullWidth
+                  className="col-span-full"
                 >
                   {markingWatched ? 'Saving...' : 'Mark as watched'}
                 </Button>
               )
             )}
-            <Button onClick={dismissMatch} fullWidth>
+            <Button onClick={dismissMatch} fullWidth className="col-span-full">
               Keep swiping
             </Button>
           </div>

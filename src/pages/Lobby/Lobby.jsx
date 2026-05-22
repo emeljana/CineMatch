@@ -8,7 +8,6 @@ import Button from '../../components/Button/Button';
 import JoinCode from '../../components/party/JoinCode/JoinCode';
 import Modal from '../../components/ui/Modal/Modal';
 import CurtainScene from '../../components/cinema/CurtainScene';
-import './Lobby.css';
 
 const POLL_INTERVAL_MS = 5000;
 
@@ -85,74 +84,76 @@ function Lobby() {
     }
   }
 
-  if (loading) return <div className="lobby-status">Loading lobby...</div>;
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen text-[15px] text-muted">Loading lobby...</div>;
+  }
   if (loadFailed) {
-    return <div className="lobby-status lobby-status--error">Lobby unavailable.</div>;
+    return <div className="flex items-center justify-center min-h-screen text-[15px] text-dislike">Lobby unavailable.</div>;
   }
 
   const activeMembers = party?.members?.filter((member) => member.isActive) ?? [];
   const isHost = party?.hostUsername === user?.username;
 
   return (
-    <div className="lobby-page">
-      <CurtainScene
-        variant="backdrop"
-        className="lobby-cinema-backdrop"
-      />
-      <header className="lobby-header">
+    <div className="relative min-h-screen bg-bg overflow-hidden">
+      <CurtainScene variant="backdrop" className="z-0" />
+
+      <header className="relative z-[2] flex items-center justify-between gap-5 px-6 py-5 border-b border-border bg-[rgba(26,27,37,0.9)] backdrop-blur-[10px] max-[560px]:flex-col max-[560px]:items-start">
         <div>
-          <span className="lobby-logo">CineMatch</span>
-          <h1 className="lobby-title">WatchParty lobby</h1>
+          <span className="block mb-1 text-[13px] font-bold text-accent">CineMatch</span>
+          <h1 className="text-2xl font-bold">WatchParty lobby</h1>
         </div>
-        <Button
-          variant="secondary"
-          onClick={onLeaveClick}
-          disabled={leaveLoading}
-        >
+        <Button variant="secondary" onClick={onLeaveClick} disabled={leaveLoading}>
           Leave party
         </Button>
       </header>
 
-      <main className="lobby-main">
-        <section className="lobby-code-panel" aria-label="Join code">
-          <span className="lobby-code-label">Join code</span>
-          <JoinCode code={party?.joinCode} />
+      <main className="relative z-[2] w-[min(760px,100%)] mx-auto px-6 py-10 flex flex-col gap-6">
+        <section className="flex flex-col items-center gap-2 p-7 border border-border rounded-md bg-[rgba(26,27,37,0.88)] backdrop-blur-[10px]" aria-label="Join code">
+          <span className="text-[12px] text-muted uppercase tracking-[0.08em]">Join code</span>
+          <JoinCode
+            code={party?.joinCode}
+            codeClassName="text-[42px] leading-none tracking-[8px] max-[560px]:text-[34px] max-[560px]:tracking-[5px]"
+          />
         </section>
 
-        <section className="lobby-content">
-          <div className="lobby-members-header">
+        <section className="p-6 border border-border rounded-md bg-[rgba(26,27,37,0.88)] backdrop-blur-[10px]">
+          <div className="flex items-start justify-between gap-4 mb-5 max-[560px]:flex-col">
             <div>
-              <h2>Active participants</h2>
-              <p>{activeMembers.length} ready to swipe</p>
+              <h2 className="text-xl font-bold">Active participants</h2>
+              <p className="text-[14px] text-muted">{activeMembers.length} ready to swipe</p>
             </div>
-            {refreshing && <span className="lobby-refreshing">Updating...</span>}
+            {refreshing && <span className="text-[14px] text-muted">Updating...</span>}
           </div>
 
-          <ul className="lobby-member-list">
+          <ul className="flex flex-col gap-3 p-0 m-0 list-none">
             {activeMembers.map((member) => (
-              <li className="lobby-member" key={member.userId}>
-                <span className="lobby-member-avatar">
+              <li className="flex items-center gap-3 p-3 rounded-md bg-surface-2" key={member.userId}>
+                <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-accent text-white text-[15px] font-bold">
                   {member.username.charAt(0).toUpperCase()}
                 </span>
-                <span className="lobby-member-name">{member.username}</span>
+                <span className="flex-1 min-w-0 break-words font-semibold">{member.username}</span>
                 {member.username === party?.hostUsername && (
-                  <span className="lobby-host-badge">Host</span>
+                  <span className="py-1 px-2.5 rounded-sm bg-[rgba(170,59,255,0.14)] text-accent text-[12px] font-bold uppercase tracking-[0.06em]">
+                    Host
+                  </span>
                 )}
               </li>
             ))}
           </ul>
         </section>
 
-        <section className="lobby-actions">
+        <section className="flex justify-center p-6 border border-border rounded-md bg-[rgba(26,27,37,0.88)] backdrop-blur-[10px]">
           {isHost ? (
             <Button onClick={handleStartSession} disabled={starting}>
               {starting ? 'Starting...' : 'Start session'}
             </Button>
           ) : (
-            <p className="lobby-waiting">Waiting for the host to start...</p>
+            <p className="text-muted text-center">Waiting for the host to start...</p>
           )}
         </section>
       </main>
+
       <Modal
         isOpen={confirmLeaveOpen}
         onClose={() => setConfirmLeaveOpen(false)}

@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import './Modal.css';
 
 function Modal({ isOpen, onClose, title, children }) {
   useEffect(() => {
@@ -14,15 +13,18 @@ function Modal({ isOpen, onClose, title, children }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/70 flex items-center justify-center p-6 z-[200]"
+      onClick={onClose}
+    >
       <div
-        className="modal"
+        className="bg-surface border border-border rounded-lg p-7 w-full max-w-[400px] flex flex-col gap-4"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 id="modal-title" className="modal-title">{title}</h2>
+        <h2 id="modal-title" className="text-xl font-bold">{title}</h2>
         {children}
       </div>
     </div>
