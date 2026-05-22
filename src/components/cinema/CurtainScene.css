@@ -122,13 +122,13 @@
 
 .cinema-sofa-img {
   display: block;
-  width: min(78vw, 760px);
+  width: min(94vw, 912px);
   height: auto;
 }
 
 @media (max-width: 640px) {
   .cinema-sofa-img {
-    width: 96vw;
+    width: 100vw;
   }
 
   .cinema-wall {
