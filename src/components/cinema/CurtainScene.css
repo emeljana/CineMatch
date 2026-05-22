@@ -34,10 +34,6 @@
   opacity: 0.92;
 }
 
-.curtain-scene--backdrop .cinema-coffee-table {
-  opacity: 0.64;
-}
-
 .curtain-scene--backdrop .cinema-sofa-wrap {
   opacity: 0.82;
 }
@@ -113,79 +109,19 @@
   transform-origin: right center;
 }
 
-.cinema-coffee-table {
-  position: absolute;
-  bottom: 18vh;
-  z-index: 3;
-  width: min(42vw, 390px);
-  height: 42px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #3a2020, #130d0d);
-  box-shadow: 0 28px 36px rgba(0, 0, 0, 0.54);
-}
-
-.cinema-popcorn-bowl {
-  position: absolute;
-  right: 18%;
-  bottom: 24px;
-  width: 74px;
-  height: 38px;
-  border-radius: 12px 12px 34px 34px;
-  background: linear-gradient(90deg, #f7f0d5 0 18%, #8b1a1a 18% 34%, #f7f0d5 34% 52%, #8b1a1a 52% 68%, #f7f0d5 68%);
-}
-
-.cinema-popcorn-bowl span {
-  position: absolute;
-  top: -12px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fff3c7;
-}
-
-.cinema-popcorn-bowl span:nth-child(1) { left: 10px; }
-.cinema-popcorn-bowl span:nth-child(2) { left: 24px; top: -18px; }
-.cinema-popcorn-bowl span:nth-child(3) { right: 22px; top: -16px; }
-.cinema-popcorn-bowl span:nth-child(4) { right: 9px; }
-
 .cinema-sofa-wrap {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 4;
-  height: 22vh;
-  min-height: 145px;
+  pointer-events: none;
 }
 
-.cinema-sofa {
-  position: absolute;
-  right: 50%;
-  bottom: -24px;
-  width: min(78vw, 760px);
-  height: 150px;
-  border-radius: 54px 54px 0 0;
-  background: linear-gradient(180deg, #2a1719, #110c0d);
-  transform: translateX(50%);
-  box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.42);
-}
-
-.cinema-viewer {
-  position: absolute;
-  bottom: 88px;
-  z-index: 1;
-  width: 74px;
-  height: 86px;
-  border-radius: 48% 48% 20px 20px;
-  background: linear-gradient(180deg, #241617, #090708);
-}
-
-.cinema-viewer--left {
-  left: calc(50% - 132px);
-}
-
-.cinema-viewer--right {
-  right: calc(50% - 132px);
+.cinema-sofa-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 @media (max-width: 640px) {
@@ -200,20 +136,6 @@
 
   .cinema-screen-content {
     padding: 18px;
-  }
-
-  .cinema-coffee-table {
-    bottom: 20vh;
-    width: 68vw;
-  }
-
-  .cinema-sofa-wrap {
-    min-height: 130px;
-  }
-
-  .cinema-sofa {
-    width: 96vw;
-    height: 132px;
   }
 
   .curtain-scene--backdrop .cinema-wall {
