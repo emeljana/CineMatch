@@ -1,4 +1,4 @@
-import couchImg from '../../assets/couch.png';
+import couchImg from '../../assets/couch2.png';
 
 function Sofa() {
   return (

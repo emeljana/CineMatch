@@ -124,6 +124,7 @@
   display: block;
   width: min(94vw, 912px);
   height: auto;
+  mix-blend-mode: multiply;
 }
 
 @media (max-width: 640px) {
