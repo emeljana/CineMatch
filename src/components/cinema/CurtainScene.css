@@ -18,7 +18,7 @@
 }
 
 .curtain-scene--backdrop .cinema-wall {
-  width: min(92vw, 940px);
+  width: min(100vw, 1081px);
   opacity: 0.78;
   transform: translateY(-18vh);
 }
@@ -41,7 +41,7 @@
 .cinema-wall {
   position: relative;
   z-index: 1;
-  width: min(82vw, 860px);
+  width: min(94vw, 989px);
   transform: translateY(-12vh);
   perspective: 900px;
 }
@@ -131,7 +131,7 @@
   }
 
   .cinema-wall {
-    width: min(94vw, 520px);
+    width: min(100vw, 598px);
     transform: translateY(-18vh);
   }
 
@@ -144,7 +144,7 @@
   }
 
   .curtain-scene--backdrop .cinema-wall {
-    width: min(112vw, 520px);
+    width: min(112vw, 598px);
     transform: translateY(-19vh);
   }
 }
