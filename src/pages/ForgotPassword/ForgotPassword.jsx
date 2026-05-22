@@ -2,14 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { forgotPassword } from '../../services/authService';
 import { useToast } from '../../context/toastContext';
+import { parseError } from '../../helpers/errorHelpers';
 import Button from '../../components/Button/Button';
 import './ForgotPassword.css';
-
-function parseError(err) {
-  const errors = err.response?.data;
-  if (Array.isArray(errors) && errors.length > 0) return errors[0].description;
-  return 'Something went wrong. Please try again.';
-}
 
 function validateEmail(email) {
   if (!email.trim()) return 'E-post krävs.';

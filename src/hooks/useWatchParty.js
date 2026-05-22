@@ -7,12 +7,7 @@ import {
 } from '../services/watchPartyService';
 import { useWatchParty as useWatchPartyContext } from '../context/watchPartyContext';
 import { useToast } from '../context/toastContext';
-
-function parseError(err) {
-  const errors = err.response?.data;
-  if (Array.isArray(errors) && errors.length > 0) return errors[0].description;
-  return 'Something went wrong. Please try again.';
-}
+import { parseError } from '../helpers/errorHelpers';
 
 export function useWatchParty() {
   const [loading, setLoading] = useState(false);
