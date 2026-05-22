@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/userContext';
-import { useAuth } from '../../hooks/useAuth';
 import { useWatchParty } from '../../hooks/useWatchParty';
+import AppHeader from '../../components/layout/AppHeader/AppHeader';
 import Button from '../../components/Button/Button';
 import CurtainScene from '../../components/cinema/CurtainScene';
 import './Home.css';
 
 const JOIN_CODE_LENGTH = 6;
+const ROLE_ADMIN = 1;
 
 function Home() {
   const { user } = useUser();
-  const { handleLogout } = useAuth();
   const { handleCreate, handleJoin, loading } = useWatchParty();
   const navigate = useNavigate();
   const [joinCode, setJoinCode] = useState('');
@@ -49,15 +49,13 @@ function Home() {
         variant="backdrop"
         className="home-cinema-scene"
       />
-      <header className="home-header">
-        <span className="home-logo">CineMatch</span>
-        <div className="home-header-right">
-          <span className="home-username">{user?.username}</span>
-          <Button variant="secondary" onClick={handleLogout}>
-            Log out
+      <AppHeader
+        action={user?.role === ROLE_ADMIN && (
+          <Button variant="secondary" onClick={() => navigate('/admin')}>
+            Admin panel
           </Button>
-        </div>
-      </header>
+        )}
+      />
 
       <main className="home-main">
         <h1 className="home-heading">Movie night starts here</h1>

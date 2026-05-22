@@ -17,39 +17,13 @@
   z-index: 2;
 }
 
-.home-header,
-.home-card {
+.home-page .app-header {
   backdrop-filter: blur(10px);
 }
 
 .home-card {
+  backdrop-filter: blur(10px);
   background: rgba(26, 27, 37, 0.86);
-}
-
-.home-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
-}
-
-.home-logo {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-accent);
-}
-
-.home-header-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.home-username {
-  font-size: 14px;
-  color: var(--color-text-muted);
 }
 
 .home-main {
@@ -158,18 +132,6 @@
 }
 
 @media (max-width: 600px) {
-  .home-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-  }
-
-  .home-header-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
   .home-main {
     justify-content: flex-start;
     padding: 32px 16px;
