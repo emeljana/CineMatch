@@ -120,8 +120,9 @@
 
 .cinema-sofa-img {
   display: block;
-  width: min(94vw, 912px);
+  width: min(100vw, 980px);
   height: auto;
+  filter: brightness(1.4);
 }
 
 @media (max-width: 640px) {
