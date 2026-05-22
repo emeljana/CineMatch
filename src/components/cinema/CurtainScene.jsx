@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import Curtain from './Curtain';
-import CoffeeTable from './CoffeeTable';
 import Sofa from './Sofa';
 import './CurtainScene.css';
 
@@ -29,7 +28,6 @@ function CurtainScene({ isOpen = false, variant = 'full', className = '', childr
           <Curtain side="right" isOpen={isOpen} />
         </div>
       </div>
-      <CoffeeTable />
       <Sofa />
     </div>
   );

@@ -54,7 +54,7 @@ function Home() {
         )}
       />
 
-      <main className="relative z-[2] flex-1 flex flex-col items-center justify-center px-6 py-12 max-[600px]:justify-start max-[600px]:py-8 max-[600px]:px-4">
+      <main className="relative z-[2] flex-1 flex flex-col items-center mt-16 px-6 py-12 max-[600px]:justify-start max-[600px]:py-8 max-[600px]:px-4">
         <h1 className="text-[36px] font-bold text-center mb-3 max-[600px]:text-[30px]">Movie night starts here</h1>
         <p className="text-[16px] text-muted text-center mb-10">Create a party or join one with a code.</p>
 
