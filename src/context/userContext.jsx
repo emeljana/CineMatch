@@ -11,10 +11,19 @@ export function UserProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    getMe()
-      .then(({ data }) => setUser(data))
-      .catch(() => localStorage.removeItem('token'))
-      .finally(() => setLoading(false));
+
+    async function fetchUser() {
+      try {
+        const { data } = await getMe();
+        setUser(data);
+      } catch {
+        localStorage.removeItem('token');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUser();
   }, []);
 
   function logout() {
